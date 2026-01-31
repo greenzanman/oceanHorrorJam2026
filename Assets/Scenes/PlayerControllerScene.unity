@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb977b126bc1b4f15813dcf9da9bb600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Mesh: {fileID: 0}
   m_Points:
   - {x: -2.332864, y: 0, z: -2.3016472}
   - {x: -3.7288992, y: 0, z: 1.7299423}
@@ -1885,6 +1886,7 @@ MonoBehaviour:
   - {x: 0.005971428, y: 0.08073901, z: 0.9967174, w: -1}
   - {x: 0.12340306, y: 0.16863488, z: 0.9779233, w: -1}
   m_Colors: []
+  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -1898,6 +1900,10 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+  m_SelectedCacheDirty: 1
+  m_SelectedSharedVerticesCount: 0
+  m_SelectedCoincidentVertexCount: 0
+  m_SelectedCoincidentVertices: 
 --- !u!4 &201582596
 Transform:
   m_ObjectHideFlags: 0
@@ -2037,9 +2043,13 @@ MonoBehaviour:
     rid: 3269751486325719066
   m_Size: {x: 21.522173, y: -12.744122, z: -23.375708}
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Mesh: {fileID: 0}
   m_PivotLocation: 1
   m_PivotPosition: {x: 0, y: 0, z: 0}
   m_UnmodifiedMeshVersion: 5168
+  m_EditionBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   m_ShapeBox:
     m_Center: {x: 10.019991, y: -6.372059, z: -10.882935}
     m_Extent: {x: 10.761086, y: -6.372061, z: -11.687854}
@@ -3155,6 +3165,7 @@ MonoBehaviour:
   - {x: -0.892864, y: 0.45027024, z: 0.0071145827, w: -1}
   - {x: -0.8780091, y: 0.47843212, z: 0.014239438, w: -1}
   m_Colors: []
+  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -3168,6 +3179,10 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+  m_SelectedCacheDirty: 1
+  m_SelectedSharedVerticesCount: 0
+  m_SelectedCoincidentVertexCount: 0
+  m_SelectedCoincidentVertices: 
 --- !u!1 &291481704
 GameObject:
   m_ObjectHideFlags: 0
@@ -3288,6 +3303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb977b126bc1b4f15813dcf9da9bb600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Mesh: {fileID: 0}
   m_Points:
   - {x: 0, y: 0, z: 0}
   - {x: 1.8791952, y: -0.000004082918, z: -0.44371462}
@@ -3913,6 +3929,7 @@ MonoBehaviour:
   - {x: -0.9846758, y: -0.011888219, z: 0.17398928, w: -1}
   - {x: -0.98964214, y: -0.015723018, z: 0.14269307, w: -1}
   m_Colors: []
+  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -3926,6 +3943,10 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+  m_SelectedCacheDirty: 1
+  m_SelectedSharedVerticesCount: 0
+  m_SelectedCoincidentVertexCount: 0
+  m_SelectedCoincidentVertices: 
 --- !u!43 &500227669
 Mesh:
   m_ObjectHideFlags: 0
@@ -4657,6 +4678,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 0.1
+  xRotation: 0
+  playerBody: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4669,18 +4692,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AllMapsHashCode: 0
   m_Actions: {fileID: -944628639613478452, guid: eb097e4910fbb57788f630402b3c7a1b, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_DeviceRegainedEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
@@ -4953,6 +4980,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: 4
   gravity: 1.62
+  rb: {fileID: 0}
+  moveAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: ef9581c1-deb9-45aa-8492-9504e615e408
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  thrustUpAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 72057d77-5a3e-4151-8b9d-8b15bb2bff50
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  thrustDownAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: de6aca12-8e20-4ee4-807d-96b94ab9755b
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  playerInput: {fileID: 0}
 --- !u!114 &1769886973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4965,18 +5021,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_AllMapsHashCode: 0
   m_Actions: {fileID: -944628639613478452, guid: eb097e4910fbb57788f630402b3c7a1b, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_DeviceRegainedEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
+    m_CallsDirty: 1
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
@@ -5114,6 +5174,45 @@ MonoBehaviour:
   strokeForce: 1
   strokeCooldownSeconds: 1
   strokeInputBufferSeconds: 0.5
+  rb: {fileID: 0}
+  moveAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 9f1d505a-03bb-48f5-a22d-50104074436c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  strokeAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: fb597c02-1b6c-4ba2-901a-6b090b7fc0ff
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  thrustUpAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 70f75782-01f4-4361-9df2-17cc1474bea5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  thrustDownAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 3311a2e3-6483-4bec-a681-ef32703f9477
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  playerInput: {fileID: 0}
+  strokeInputBuffered: 0
 --- !u!1 &2106494778
 GameObject:
   m_ObjectHideFlags: 0
@@ -5238,9 +5337,13 @@ MonoBehaviour:
     rid: 3269751486325719051
   m_Size: {x: 5.705816, y: 5.874308, z: 4.2793107}
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Mesh: {fileID: 2106494784}
   m_PivotLocation: 1
   m_PivotPosition: {x: 0, y: 0, z: 0}
   m_UnmodifiedMeshVersion: 4933
+  m_EditionBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
   m_ShapeBox:
     m_Center: {x: 2.6564353, y: 2.9371538, z: 1.9923017}
     m_Extent: {x: 2.852908, y: 2.9371538, z: 2.1396554}
@@ -5249,7 +5352,7 @@ MonoBehaviour:
     RefIds:
     - rid: 3269751486325719051
       type: {class: Cube, ns: UnityEngine.ProBuilder.Shapes, asm: Unity.ProBuilder}
-      data: 
+      data: {}
 --- !u!114 &2106494784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6294,6 +6397,7 @@ MonoBehaviour:
   - {x: 0.86145777, y: -0.506985, z: -0.02927021, w: -1}
   - {x: 0.78243107, y: -0.62003565, z: -0.057943914, w: -1}
   m_Colors: []
+  <userCollisions>k__BackingField: 0
   m_UnwrapParameters:
     m_HardAngle: 88
     m_PackMargin: 20
@@ -6307,6 +6411,10 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+  m_SelectedCacheDirty: 1
+  m_SelectedSharedVerticesCount: 0
+  m_SelectedCoincidentVertexCount: 0
+  m_SelectedCoincidentVertices: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
