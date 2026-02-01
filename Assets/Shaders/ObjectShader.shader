@@ -3,6 +3,7 @@ Shader "Unlit/ObjectShader"
     Properties
     {
         _Visible("Visible", Float) = 1
+        _AlwaysHidden("AlwaysHidden", Float) = 0
         _MainTex ("Texture", 2D) = "white" {}
     }
     SubShader
@@ -44,6 +45,7 @@ Shader "Unlit/ObjectShader"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float _Visible;
+            float _AlwaysHidden;
 
             v2f vert (appdata v)
             {
@@ -60,6 +62,8 @@ Shader "Unlit/ObjectShader"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
+                if (_AlwaysHidden > 0)
+                    return fixed4(0, 0, 0, 1);
                 return fixed4(_Visible, _Visible, _Visible, 1);
             }
             ENDCG
