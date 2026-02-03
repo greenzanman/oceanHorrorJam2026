@@ -23,7 +23,7 @@ public class PickupLogic : MonoBehaviour
         // Trigger the event
         OnPickedUp?.Invoke(this);
         // Destroy the pickup object
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
     
 }
