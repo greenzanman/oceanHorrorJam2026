@@ -7,10 +7,14 @@ using UnityEngine.UI;
 
 public class PickUpUI : MonoBehaviour
 {
+    [SerializeField] private Vector3 origin = new Vector3(0, 100, 0);
+    [SerializeField] private int fontSize = 24;
+    [SerializeField] private float offset = 30f;
     [SerializeField] private float fadeDuration = 2f;
-    private TextMeshProUGUI pickupText;
+    [SerializeField] private string pickupPrefix = "Picked up: ";
 
     private Coroutine clearTextCoroutine;
+    private int numberOfPickups = 0;
 
     
     
@@ -19,41 +23,37 @@ public class PickUpUI : MonoBehaviour
     {
         // Subscribe to the pickup event
         PickupLogic.OnPickedUp += HandlePickup;
-        pickupText = GetComponent<TextMeshProUGUI>();
+        // Subscribe to the UITextDestroyed event
+        UIPopUp.UITextDestroyed += HandleTextDestroyed;
     }
 
     void HandlePickup(PickupLogic pickup)
     {
-        if (clearTextCoroutine != null)
-        {
-            StopCoroutine(clearTextCoroutine);
-        }
         Debug.Log("Pickup event received for: " + pickup.name);
-        // Here you can add UI update logic, like showing a message or updating inventory
-        if (pickupText != null)
-        {
-            pickupText.text = "Picked up: " + pickup.name;
-            // Optionally, you can add code to fade out the text after a few seconds
-        } 
-        clearTextCoroutine = StartCoroutine(ClearPickupTextAfterDelay(2f));
+        addPickupText(pickup.name);
     }
 
-    IEnumerator ClearPickupTextAfterDelay(float delay)
+    void addPickupText(string pickupName)
     {
-        yield return new WaitForSeconds(delay);
+        GameObject textObject = new GameObject("PickUpText");
+        textObject.transform.SetParent(this.transform);
 
-        float elapsedTime = 0f;
-        Color originalColor = pickupText.color;
+        RectTransform rectTransform = textObject.AddComponent<RectTransform>();
+        TextMeshProUGUI tmp = textObject.AddComponent<TextMeshProUGUI>();
+        UIPopUp uiPopUp = textObject.AddComponent<UIPopUp>();
 
-        while (elapsedTime < fadeDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-            pickupText.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
-            yield return null;
-        }
+        uiPopUp.fadeDuration = fadeDuration;
+        tmp.fontSize = fontSize;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.text = pickupPrefix + pickupName;
+        rectTransform.localPosition = Vector3.zero + origin;
+        numberOfPickups++;
+        // Adjust position based on number of pickups
+        rectTransform.localPosition += new Vector3(0, (numberOfPickups - 1) * offset, 0);
+    }
 
-        pickupText.text = "";
-        pickupText.color = originalColor; // Reset color
+    void HandleTextDestroyed(PickupLogic pickup)
+    {
+        numberOfPickups--;
     }
 }
