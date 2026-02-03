@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+// Floats in random directions, goes towards sounds
 public class WhaleController : MonoBehaviour
 {
-    public static UnityEvent<Vector3> soundEvent;
     private Vector3 facingDirection;
     private Vector3 goalDirection;
     private Vector3 flatFacing;
@@ -12,10 +12,10 @@ public class WhaleController : MonoBehaviour
     void Start()
     {
         // Create event system?
-        if (soundEvent == null)
-            soundEvent = new UnityEvent<Vector3>();
+        if (PlayerTester.soundEvent == null)
+            PlayerTester.soundEvent = new UnityEvent<Vector3>();
 
-        soundEvent.AddListener(OnSound);
+        PlayerTester.soundEvent.AddListener(OnSound);
 
         // Random starting angle
         float startAngle = Random.Range(0, 2 * Mathf.PI);

@@ -452,6 +452,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b85db97bcad9a44da29fa5d3894581b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &134353465
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.3697376
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00000023841858
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.06693077
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 701498773167483722, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810416074263946574, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
+      propertyPath: m_Name
+      value: MinnowSchool
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
 --- !u!1 &1032251519
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,3 +1576,4 @@ SceneRoots:
   - {fileID: 11337183}
   - {fileID: 1483888626}
   - {fileID: 1723182998}
+  - {fileID: 134353465}
