@@ -106,10 +106,7 @@ public class CameraTagger : MonoBehaviour
     void AddOutline(GameObject obj)
     {
         Outline outline = obj.GetComponent<Outline>();
-        if (outline != null)
-        {
-            outline.enabled = true;
-        }
+        outline.EnableOutline();
     }
 
     /*
@@ -118,9 +115,6 @@ public class CameraTagger : MonoBehaviour
     void RemoveOutline(GameObject obj)
     {
         Outline outline = obj.GetComponent<Outline>();
-        if (outline != null)
-        {
-            outline.enabled = false;
-        }
+        outline.DisableOutline();
     }
 }

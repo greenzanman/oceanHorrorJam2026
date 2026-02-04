@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,24 @@ using UnityEngine.InputSystem;
 
 public class Carousel : MonoBehaviour
 {
+    // TODO: Decouple initial rotation of pickup items from carousel logic
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float rotationAngle = 15f;
     [SerializeField] private float spacing = 2f;
     [SerializeField] private float moveDuration = 0.3f;
 
+    public static Action<string, string> onItemChanged;
+
     private List<Transform> items;
+    private Queue<PickupLogic> pendingPickups = new();
+
+    private int currentItem = 0;
+
     private InputAction moveAction;
     private bool isMoving = false;
 
-    void Start()
+    void Awake()
     {
         PickupLogic.OnPickedUp += HandlePickup;
         moveAction = playerInput.actions["Move"];
@@ -24,6 +32,10 @@ public class Carousel : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             items.Add(transform.GetChild(i));
+            if (items[i].GetComponent<PickupLogic>() == null)
+            {
+                Debug.LogError("Child transform is missing pickup logic: " + i);
+            }
         }
 
         // Initial horizontal layout
@@ -31,6 +43,17 @@ public class Carousel : MonoBehaviour
         {
             items[i].localPosition = new Vector3(i * spacing, 0, 0);
         }
+        foreach (Transform item in items)
+        {
+            Debug.Log("Item in carousel at start: " + item.name);
+        }
+        Debug.Log("Item:", items[currentItem]);
+        bool isNNull = items[currentItem].GetComponent<PickupLogic>() == null;
+        Debug.Log("Is Null:" + isNNull);
+        Debug.Log("PickupLogic:", items[currentItem].GetComponent<PickupLogic>());
+        string description = items[currentItem].GetComponent<PickupLogic>().GetDescription();
+        string name = items[currentItem].name;
+        onItemChanged?.Invoke(name, description);
     }
 
     void Update()
@@ -42,10 +65,12 @@ public class Carousel : MonoBehaviour
         if (moveInput.x > 0.5f)
         {
             StartCoroutine(MoveCarousel(-1));
+            currentItem = (currentItem + 1) % items.Count;
         }
         else if (moveInput.x < -0.5f)
         {
             StartCoroutine(MoveCarousel(1));
+            currentItem = (currentItem - 1 + items.Count) % items.Count;
         }
         RotateItem();
     }
@@ -125,19 +150,33 @@ public class Carousel : MonoBehaviour
                 );
             }
         }
-
+        string description = items[currentItem].GetComponent<PickupLogic>().GetDescription();
+        string name = items[currentItem].name;
+        onItemChanged?.Invoke(name, description);
         isMoving = false;
+        while (pendingPickups.Count > 0)
+        {
+            AddPickupNow(pendingPickups.Dequeue());
+        }
     }
 
     void HandlePickup(PickupLogic pickup)
     {
-        Transform pickupTransform = pickup.transform;
-        pickupTransform.SetParent(this.transform);
-        items.Add(pickupTransform);
+        if (isMoving)
+        {
+            pendingPickups.Enqueue(pickup);
+            return;
+        }
 
-        // Position new item at the end of the carousel
-        float newX = (items.Count - 1) * spacing;
-        pickupTransform.localPosition = new Vector3(newX, 0, 0);
+        AddPickupNow(pickup);
+    }
+
+    void AddPickupNow(PickupLogic pickup)
+    {
+        Transform t = pickup.transform;
+        t.SetParent(transform);
+        items.Add(t);
+
         RebuildLayout();
     }
 
@@ -148,5 +187,4 @@ public class Carousel : MonoBehaviour
             items[i].localPosition = new Vector3(i * spacing, 0, 0);
         }
     }
-
 }

@@ -9,24 +9,29 @@ public class Outline : MonoBehaviour
     
     private GameObject outlineObject;
 
-    void Start()
+    void Awake()
     {
         outlineEnabled = false;
-        if (outlineObject != null)
-            Destroy(outlineObject);
-    }
-    
-    void OnEnable()
-    {
         CreateOutline();
+        DisableOutline();
+    }
+
+    public void EnableOutline()
+    {
         outlineEnabled = true;
+        if (outlineObject != null)
+        {
+            outlineObject.SetActive(true);
+        }
     }
     
-    void OnDisable()
+    public void DisableOutline()
     {
-        if (outlineObject != null)
-            Destroy(outlineObject);
         outlineEnabled = false;
+        if (outlineObject != null)
+        {
+            outlineObject.SetActive(false);
+        }
     }
     
     void CreateOutline()
