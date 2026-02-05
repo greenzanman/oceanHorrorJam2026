@@ -30,12 +30,25 @@ public class PlayerTester : MonoBehaviour
     /// Returns if a given position is in the view cone
     /// </summary>
     /// <param name="position"></param>
-    public bool InVision(Vector3 position)
+    public bool InVision(Vector3 position, float border = 0.0f)
     {
         Vector3 pos = playerCamera.WorldToScreenPoint(position);
-        if (pos.x < 0 || pos.y < 0 || pos.x > Screen.width || pos.y > Screen.height)
+        if (pos.x / Screen.width < -border || pos.y / Screen.width < -border 
+            || pos.x / Screen.width > 1 + border || pos.y / Screen.height > 1 + border)
             return false;
         return true;
+    }
+
+    public Vector3 cameraFacing()
+    {
+        return playerCamera.transform.forward;
+    }
+
+    public Vector2 InVisionPos(Vector3 position)
+    {
+        
+        Vector3 pos = playerCamera.WorldToScreenPoint(position);
+        return new Vector2(pos.x / Screen.width, pos.y / Screen.height);
     }
 
 }

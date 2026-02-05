@@ -7,6 +7,7 @@ public class WhaleController : MonoBehaviour
     private Vector3 facingDirection;
     private Vector3 goalDirection;
     private Vector3 flatFacing;
+    private SecondOrderDynamics dynamics; 
 
     // Start is called before the first frame update
     void Start()
@@ -19,26 +20,28 @@ public class WhaleController : MonoBehaviour
 
         // Random starting angle
         float startAngle = Random.Range(0, 2 * Mathf.PI);
-        facingDirection = new Vector3(Mathf.Sin(startAngle), 0, Mathf.Cos(startAngle))
-            * Mathf.Rad2Deg;
+        facingDirection = new Vector3(Mathf.Sin(startAngle), 0, Mathf.Cos(startAngle));
         goalDirection = facingDirection;
+
+        // SOD initializer
+        dynamics = new SecondOrderDynamics(transform.position, 0.5f, 1, 2);
     }
 
     // Update is called once per frame
     void Update()
     {
-        facingDirection = Vector3.RotateTowards(facingDirection, goalDirection, 
-            Time.deltaTime, 0);
-        transform.position += facingDirection.normalized * Time.deltaTime;
-        flatFacing = facingDirection;
-        flatFacing.y = 0;
-        
+        // Increment SOD
+        dynamics.Increment(facingDirection, Time.deltaTime);
+        transform.position = dynamics.smoothedPosition;
+
+        flatFacing = Vector3.MoveTowards(flatFacing, new Vector3(dynamics.smoothedVelocity.x, 0, dynamics.smoothedVelocity.z), Time.deltaTime);
+
         // Facing the right direction
         transform.rotation = Quaternion.LookRotation(flatFacing);    
     }
 
     void OnSound(Vector3 soundPosition)
     {
-        goalDirection = (soundPosition - transform.position).normalized;
+        facingDirection = (soundPosition - transform.position).normalized;
     }
 }

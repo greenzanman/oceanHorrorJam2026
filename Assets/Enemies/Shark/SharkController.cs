@@ -18,7 +18,7 @@ public class SharkController : MonoBehaviour
         {
             Vector3 playerPosition = PlayerTester.playerInstance.transform.position;
             float moveRate;
-            if (PlayerTester.playerInstance.InVision(transform.position))
+            if (PlayerTester.playerInstance.InVision(transform.position, 0.1f))
             {
                 moveRate = -0.3f;
             }

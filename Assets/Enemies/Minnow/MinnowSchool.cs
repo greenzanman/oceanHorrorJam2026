@@ -31,7 +31,7 @@ public class MinnowSchool : MonoBehaviour
 
     void OnSound(Vector3 soundPosition)
     {
-        if ((soundPosition - transform.position).sqrMagnitude < alertDistance)
+        if ((soundPosition - transform.position).sqrMagnitude < alertDistance * alertDistance)
         {
             foreach (MinnowIndividual minnow in minnows)
             {

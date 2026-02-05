@@ -5,23 +5,30 @@ using UnityEngine;
 public class MinnowIndividual : MonoBehaviour
 {
     Vector3 localGoal;
+
     const float goalRadius = 2.5f;
     const float moveSpeed = 1f;
 
     Vector3 fearOffset = Vector3.zero;
     int fearCount;
+    private SecondOrderDynamics dynamics; 
     // Start is called before the first frame update
     void Start()
     {
         // Choose a random local goal in a radius
         GenerateNewGoal();
+
+        // SOD initializer
+        dynamics = new SecondOrderDynamics(transform.localPosition, 0.5f, 1, 2);
     }
 
 
     public void ProcessMinnow(float deltaTime)
     {
-        transform.localPosition = Vector3.MoveTowards(transform.localPosition, localGoal,
+        dynamics.Increment((localGoal - transform.localPosition).normalized, 
             (fearCount > 0 ? moveSpeed * 2.5f : moveSpeed) * deltaTime);
+
+        transform.localPosition = dynamics.smoothedPosition;
 
         if ((transform.localPosition - localGoal).sqrMagnitude < 0.1f)
         {
