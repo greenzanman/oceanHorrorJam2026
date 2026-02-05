@@ -3,52 +3,60 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// sonar ping sphere expands from player location of when "Fire" action pressed
+// - after pressing Fire, the pingage starts at 0 and increases over time until pingDuration is reached
+// - the sphere goes bigger wrt pingAge 
 public class SonarPingSphere : MonoBehaviour
 {
 
-    [SerializeField] private float pingDuration = 2;
-    [SerializeField] private float pingRadius = 10;
-    [SerializeField] private float delay = 0;
+    private float pingDuration;
+    private float pingRadius;
+    private float revealDelay;
 
-    private float pingAge = 0;
-    [SerializeField] private bool looping = true;
+    private float pingAge = 0f;
+    private bool isInitialized = false;
+    [SerializeField] private bool looping = false;
 
     // Start is called before the first frame update
-    void Start()
+    public void Initialize(float pingDuration, float pingRadius, float revealDelay)
     {
-        pingAge = -delay;
+        this.pingDuration = pingDuration;
+        this.pingRadius = pingRadius;
+        this.revealDelay = revealDelay;
+
+        transform.localScale = Vector3.zero;
+        isInitialized = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        pingAge += Time.deltaTime;
-        if (pingAge < 0)
+        if (!isInitialized)
             return;
 
+        pingAge += Time.deltaTime;
         if (pingAge > pingDuration)
         {
-            if (looping)
-            {
-                pingAge -= pingDuration;
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            Destroy(gameObject);
+            return;
         }
 
         float scale = pingAge / pingDuration * pingRadius;
         transform.localScale = new Vector3(scale, scale, scale);
-        
     }
-
+    
     void OnTriggerEnter(Collider other)
     {
         SonarObject sonarObject = other.GetComponent<SonarObject>();
         if (sonarObject)
         {
-            sonarObject.SetOpacity(1.5f);
+            StartCoroutine(DelayedReveal(sonarObject));
         }
+    }
+
+    private IEnumerator DelayedReveal(SonarObject sonarObject)
+    {
+        yield return new WaitForSeconds(revealDelay);
+        sonarObject.SetOpacity(1.5f);
     }
 }
