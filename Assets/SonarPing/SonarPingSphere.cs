@@ -56,7 +56,7 @@ public class SonarPingSphere : MonoBehaviour
 
     private IEnumerator DelayedReveal(SonarObject sonarObject)
     {
-        yield return new WaitForSeconds(revealDelay);
-        sonarObject.SetOpacity(1.5f);
+        // Fade in to 1.5 over revealDelay seconds with cubic ease-in
+        yield return sonarObject.FadeToOpacity(1.5f, revealDelay);
     }
 }

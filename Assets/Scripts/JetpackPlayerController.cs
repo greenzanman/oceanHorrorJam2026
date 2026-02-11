@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,7 @@ using UnityEngine.InputSystem;
 public class JetpackPlayerController : MonoBehaviour
 {
 
+    public bool disableUpDown = true;
     public float thrust = 10f;
 
     private Rigidbody rb;
@@ -32,14 +34,18 @@ public class JetpackPlayerController : MonoBehaviour
         Vector2 horizontalThrustDirection = moveAction.ReadValue<Vector2>();
 
         float verticalThrust = 0;
-        if (thrustUpAction.IsPressed() && !thrustDownAction.IsPressed())
+        if (!disableUpDown)
         {
-            verticalThrust = 1;
+            if (thrustUpAction.IsPressed() && !thrustDownAction.IsPressed())
+            {
+                verticalThrust = 1;
+            }
+            else if (!thrustUpAction.IsPressed() && thrustDownAction.IsPressed())
+            {
+                verticalThrust = -1;
+            }
         }
-        else if (!thrustUpAction.IsPressed() && thrustDownAction.IsPressed())
-        {
-            verticalThrust = -1;
-        }
+        
 
         Vector3 cameraForward = playerInput.camera.transform.forward;
         Vector3 cameraRight = playerInput.camera.transform.right;

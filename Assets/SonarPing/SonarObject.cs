@@ -29,4 +29,20 @@ public class SonarObject : MonoBehaviour
     {
         opacityAmount = opacity;
     }
+
+    public IEnumerator FadeToOpacity(float targetOpacity, float duration)
+    {
+        float startOpacity = opacityAmount;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            // Cubic ease-in: t^3
+            float easedT = t * t * t;
+            opacityAmount = Mathf.Lerp(startOpacity, targetOpacity, easedT);
+            yield return null;
+        }
+        opacityAmount = targetOpacity;
+    }
 }
