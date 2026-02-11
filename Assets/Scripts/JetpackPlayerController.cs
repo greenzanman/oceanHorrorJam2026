@@ -11,6 +11,7 @@ public class JetpackPlayerController : MonoBehaviour
 
     public bool disableUpDown = true;
     public float thrust = 10f;
+    public float gravity = 1.62f;
 
     private Rigidbody rb;
     private InputAction moveAction;
@@ -30,6 +31,9 @@ public class JetpackPlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // apply gravity
+        rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
+
         // Thrust direction. Forward/backward/left/right relative to the camera direction.
         Vector2 horizontalThrustDirection = moveAction.ReadValue<Vector2>();
 
