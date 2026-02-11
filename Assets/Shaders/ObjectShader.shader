@@ -4,7 +4,9 @@ Shader "Unlit/ObjectShader"
     {
         _Visible("Visible", Float) = 1
         _AlwaysHidden("AlwaysHidden", Float) = 0
-        _MainTex ("Texture", 2D) = "white" {}
+        
+        _ColorBottom("Bottom Color", Color) = (0, 0.1, 0.3, 1)
+        _ColorTop("Top Color", Color) = (0.3, 0.7, 1, 1)
     }
     SubShader
     {
@@ -42,29 +44,34 @@ Shader "Unlit/ObjectShader"
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
-            float4 _MainTex_ST;
+            // Declare the variables so the fragment shader can see them
             float _Visible;
             float _AlwaysHidden;
+            fixed4 _ColorTop;
+            fixed4 _ColorBottom;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.uv = v.uv;
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-                // apply fog
+                // Create a vertical gradient using the properties
+                // UV.y goes from 0 (bottom) to 1 (top)
+                float t = i.uv.y;
+                fixed4 col = lerp(_ColorBottom, _ColorTop, t);
+                
                 UNITY_APPLY_FOG(i.fogCoord, col);
+
                 if (_AlwaysHidden > 0)
                     return fixed4(0, 0, 0, 1);
-                return fixed4(_Visible, _Visible, _Visible, 1);
+
+                return fixed4(col.rgb * _Visible, col.a);
             }
             ENDCG
         }
