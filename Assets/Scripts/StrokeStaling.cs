@@ -69,15 +69,15 @@ public class StrokeStaling : MonoBehaviour
 
         while (elapsed < verticalDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.fixedDeltaTime; // Use fixedDeltaTime for physics consistency
+            
             float normalizedTime = elapsed / verticalDuration;
             float curveValue = verticalForceCurve.Evaluate(normalizedTime);
-            
-            // We use the multiplier captured at the start of the stroke for consistency
             float verticalForce = curveValue * verticalForceMultiplier * staleAtTimeOfStart;
+            
             rb.AddForce(Vector3.up * verticalForce, ForceMode.Force);
 
-            yield return null;
+            yield return new WaitForFixedUpdate(); // <--- WAIT FOR PHYSICS STEP
         }
     }
 }
