@@ -6,54 +6,58 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
+    [SerializeField] private InventoryModel model;
     [SerializeField] private GameObject displayNameText = null;
     [SerializeField] private GameObject displayDescriptionText = null;
-    [SerializeField] private string defaultText = "";
     private TextMeshProUGUI tmpName;
     private TextMeshProUGUI tmpDescription;
     // Start is called before the first frame update
-    void Awake()
+    void OnEnable()
     {
-        
-        Carousel.onItemChanged += HandleOnItemChanged;
+        InventoryModel.Updated += RefreshUI;
+        //Carousel.onItemChanged += HandleOnItemChanged;
         tmpName = displayNameText.GetComponent<TextMeshProUGUI>();
         tmpDescription = displayDescriptionText.GetComponent<TextMeshProUGUI>();
         if (tmpName == null)
         {
             Debug.LogError("TextMeshProUGUI component not found on displayNameText GameObject.");
-        } else if (string.IsNullOrEmpty(defaultText))
-        {
-            defaultText = tmpName.text;
         }
 
         if (tmpDescription == null)
         {
             Debug.LogError("TextMeshProUGUI component not found on displayDescriptionText GameObject.");
         }
-        tmpName.text = defaultText;
+
+        if(model == null)
+        {
+            Debug.LogError("Model not provided.");
+        }
+
+        RefreshUI();
     }
 
-    void HandleOnItemChanged(string newName, string shortDescription, string longDescription)
+    void RefreshUI()
     {
-        UpdateDisplayName(newName);
-        UpdateDescription(shortDescription);
+        Debug.Log("Refreshing UI");
+        UpdateDisplayName();
+        UpdateDescription();
     }
 
-    void UpdateDisplayName(string newName)
+    void UpdateDisplayName()
     {
         // Debug.Log(tmpName);
         if (tmpName != null)
         {
-            tmpName.text = newName;
+            tmpName.text = model.GetName();
         }
     }
 
-    void UpdateDescription(string newDescription)
+    void UpdateDescription()
     {
         // Debug.Log(tmpDescription);
         if (tmpDescription != null)
         {
-            tmpDescription.text = newDescription;
+            tmpDescription.text = model.GetDescription();
         }
     }
 }

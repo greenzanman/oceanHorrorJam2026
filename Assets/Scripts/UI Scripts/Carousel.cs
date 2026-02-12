@@ -53,18 +53,32 @@ public class Carousel : MonoBehaviour
         {
             Debug.Log("Item in carousel at start: " + item.name);
         }
+        
+    }
+
+    void Start()
+    {
+        if (items.Count == 0) return;
         Debug.Log("Item:", items[currentItem]);
         Pickup pickupComponent = items[currentItem].GetComponent<Pickup>();
         bool isNull = pickupComponent == null;
-        string shortDescription = isNull ? "No description available" : pickupComponent.GetShortDescription();
-        string longDescription = isNull ? "No description available" : pickupComponent.GetLongDescription();
-        string name = items[currentItem].name;
-        onItemChanged?.Invoke(name, shortDescription, longDescription);
+        if (items.Count > 0)
+        {
+            Pickup pickup = items[currentItem].GetComponent<Pickup>();
+            if (pickup != null)
+            {
+                string shortDescription = pickup.GetShortDescription();
+                string longDescription = pickup.GetLongDescription();
+                string name = items[currentItem].name;
+                onItemChanged?.Invoke(name, shortDescription, longDescription);
+            }
+        }
     }
 
     void HandleMoveInput(Vector2 input)
     {
         if (isMoving) return;
+        if(items.Count <= 1) return;
         // Do nothing on move input, just prevent further movement handling
         Debug.Log("Received move input: " + input);
         Vector2 moveInput = input.normalized;
@@ -87,6 +101,7 @@ public class Carousel : MonoBehaviour
 
     void RotateItem()
     {
+        if (items.Count == 0) return;
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 currentEuler = items[i].localEulerAngles;
@@ -108,6 +123,8 @@ public class Carousel : MonoBehaviour
 
     IEnumerator MoveCarousel(int direction) // direction = -1 (right) / 1 (left)
     {
+        if (items.Count == 0)
+            yield break;
         isMoving = true;
 
         Vector3[] startPositions = new Vector3[items.Count];
@@ -160,10 +177,18 @@ public class Carousel : MonoBehaviour
                 );
             }
         }
-        string shortDescription = items[currentItem].GetComponent<Pickup>().GetShortDescription();
-        string longDescription = items[currentItem].GetComponent<Pickup>().GetLongDescription();
-        string name = items[currentItem].name;
-        onItemChanged?.Invoke(name, shortDescription, longDescription);
+        if (items.Count > 0)
+        {
+            Pickup pickup = items[currentItem].GetComponent<Pickup>();
+            if (pickup != null)
+            {
+                string shortDescription = pickup.GetShortDescription();
+                string longDescription = pickup.GetLongDescription();
+                string name = items[currentItem].name;
+                onItemChanged?.Invoke(name, shortDescription, longDescription);
+            }
+        }
+
         isMoving = false;
         while (pendingPickups.Count > 0)
         {
@@ -189,6 +214,11 @@ public class Carousel : MonoBehaviour
         items.Add(t);
 
         RebuildLayout();
+        currentItem = items.Count - 1;
+        string shortDescription = pickup.GetShortDescription();
+        string longDescription = pickup.GetLongDescription();
+        string name = items[currentItem].name;
+        onItemChanged?.Invoke(name, shortDescription, longDescription);
     }
 
     void RebuildLayout()

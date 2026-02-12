@@ -26,6 +26,7 @@ public class UIPanelManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("Panel manager awake.");
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -42,6 +43,7 @@ public class UIPanelManager : MonoBehaviour
                 Debug.LogWarning("Panel " + panel.name + " does not have the UIPanel tag. Skipping.");
             }
             panelLookup[panel.name] = panel;
+            panel.SetActive(true);
             panel.SetActive(false);
         }
         // Add current panel to lookup if it's not already there and has the correct tag

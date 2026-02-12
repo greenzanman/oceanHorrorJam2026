@@ -6,54 +6,45 @@ using System.Runtime.CompilerServices;
 
 public class DescriptionUI : MonoBehaviour
 {
+    [SerializeField] DescriptionModel model;
     [SerializeField] private GameObject descriptionTitleText = null;
     [SerializeField] private GameObject descriptionBodyText = null;
-    [SerializeField] private string defaultText = "";
     private TextMeshProUGUI tmpName;
     private TextMeshProUGUI tmpDescription;
     // Start is called before the first frame update
-    void Awake()
+    void OnEnable()
     {
-        
-        Carousel.onItemChanged += HandleOnItemChanged;
+        DescriptionModel.Updated += RefreshUI;
         tmpName = descriptionTitleText.GetComponent<TextMeshProUGUI>();
         tmpDescription = descriptionBodyText.GetComponent<TextMeshProUGUI>();
         if (tmpName == null)
         {
             Debug.LogError("TextMeshProUGUI component not found on descriptionTitleText GameObject.");
-        } else if (string.IsNullOrEmpty(defaultText))
-        {
-            defaultText = tmpName.text;
         }
 
         if (tmpDescription == null)
         {
             Debug.LogError("TextMeshProUGUI component not found on descriptionBodyText GameObject.");
         }
-        tmpName.text = defaultText;
+        RefreshUI();
     }
 
-    void HandleOnItemChanged(string newName, string shortDescription, string longDescription)
+    void RefreshUI()
     {
-        UpdateDisplayName(newName);
-        UpdateDescription(longDescription);
+        UpdateDisplayName();
+        UpdateDescription();
     }
 
-    void UpdateDisplayName(string newName)
+
+    void UpdateDisplayName()
     {
         // Debug.Log(tmpName);
-        if (tmpName != null)
-        {
-            tmpName.text = newName;
-        }
+        tmpName.text = model.GetName();
     }
 
-    void UpdateDescription(string newDescription)
+    void UpdateDescription()
     {
         // Debug.Log(tmpDescription);
-        if (tmpDescription != null)
-        {
-            tmpDescription.text = newDescription;
-        }
+        tmpDescription.text = model.GetDescription();
     }
 }
