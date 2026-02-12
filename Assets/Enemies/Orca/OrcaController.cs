@@ -33,7 +33,7 @@ public class OrcaController : MonoBehaviour
                 // If in vision, find a good direction to run
                 Vector2 visionPosition = PlayerTester.playerInstance.InVisionPos(transform.position);
 
-                Vector3 camDirection = PlayerTester.playerInstance.cameraFacing();
+                Vector3 camDirection = PlayerTester.playerInstance.CameraFacing();
                 Vector3 cameraX = Vector3.Cross(camDirection, Vector3.up).normalized;
                 Vector3 cameraY = Vector3.Cross(camDirection, cameraX).normalized;
 

@@ -39,7 +39,7 @@ public class PlayerTester : MonoBehaviour
         return true;
     }
 
-    public Vector3 cameraFacing()
+    public Vector3 CameraFacing()
     {
         return playerCamera.transform.forward;
     }
