@@ -18,12 +18,10 @@ public class PlayerTester : MonoBehaviour
         playerCamera = GetComponentInChildren<Camera>();
     }
 
-    void FixedUpdate()
+    // when Debug1 is pressed
+    public void OnDebug1(InputValue value) 
     {
-        if (playerInput.actions["Debug1"].WasPressedThisFrame())
-        {
-           soundEvent.Invoke(transform.position);
-        }
+        soundEvent.Invoke(transform.position);
     }
 
     /// <summary>
