@@ -354,9 +354,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  staleFactor: 0.7
-  recoveryRate: 0.5
-  minStaleThreshold: 0.2
+  staleFactor: 0
+  recoveryRate: 0.7
+  minStaleThreshold: 0
 --- !u!1 &84015341
 GameObject:
   m_ObjectHideFlags: 0
