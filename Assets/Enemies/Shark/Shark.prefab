@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238d4557ba81aa5449af116a1ba7ac87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  approachSpeed: 1
+  retreatSpeed: -0.3
+  detectionAngle: 0.1
 --- !u!1 &8540154931807710631
 GameObject:
   m_ObjectHideFlags: 0

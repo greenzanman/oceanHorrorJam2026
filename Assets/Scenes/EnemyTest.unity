@@ -500,49 +500,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4613204581986790899, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.428
-      objectReference: {fileID: 0}
-    - target: {fileID: 4613204581986790899, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.14
-      objectReference: {fileID: 0}
-    - target: {fileID: 6892507450440767612, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.036
-      objectReference: {fileID: 0}
-    - target: {fileID: 6892507450440767612, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.299
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070134266575637202, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.294
-      objectReference: {fileID: 0}
-    - target: {fileID: 7070134266575637202, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.559
-      objectReference: {fileID: 0}
-    - target: {fileID: 8035453052319272825, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.294
-      objectReference: {fileID: 0}
-    - target: {fileID: 8035453052319272825, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.403
-      objectReference: {fileID: 0}
     - target: {fileID: 8810416074263946574, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
       propertyPath: m_Name
       value: MinnowSchool
-      objectReference: {fileID: 0}
-    - target: {fileID: 9154326392937679302, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.683
-      objectReference: {fileID: 0}
-    - target: {fileID: 9154326392937679302, guid: 9af571f58c2cfee429ff15ba6cfc9ea8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.397
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -557,10 +517,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1773325594730307637, guid: 3db790eb7d94d1a499293e63ccad9a91, type: 3}
-      propertyPath: escapeSpeed
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 3261620525732046573, guid: 3db790eb7d94d1a499293e63ccad9a91, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.0907807
@@ -601,10 +557,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4203393688797936804, guid: 3db790eb7d94d1a499293e63ccad9a91, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: edf590f234303bd429baa4905b4341f6, type: 2}
     - target: {fileID: 8224921720478448343, guid: 3db790eb7d94d1a499293e63ccad9a91, type: 3}
       propertyPath: m_Name
       value: Orca
