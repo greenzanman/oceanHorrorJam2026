@@ -9,12 +9,7 @@ public class WhaleController : MonoBehaviour
     [SerializeField] private float damping = 1f;
     [SerializeField] private float response = 2f;
 
-    [Header("Whale Speeds")]
-    [SerializeField] private float wanderSpeed = 1f;
-    [SerializeField] private float escapeSpeed = 4f;
 
-    [Header("Vision Threshold")]
-    [SerializeField] private float visionThreshold = 0.1f;
 
     private Vector3 facingDirection;
     private Vector3 goalDirection;
