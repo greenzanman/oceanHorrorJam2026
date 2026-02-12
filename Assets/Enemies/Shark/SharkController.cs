@@ -5,10 +5,14 @@ using UnityEngine;
 // Moves towards player when they're not looking TODO: Change it to when they're spooked? or pinged?
 public class SharkController : MonoBehaviour
 {
+    [Header("Shark Behavior Tuning")]
+    [SerializeField] private float approachSpeed = 1f;
+    [SerializeField] private float retreatSpeed = -0.3f;
+    [SerializeField] private float detectionAngle = 0.1f;
+
     // Start is called before the first frame update
     void Start()
-    {
-        
+    {        
     }
 
     // Update is called once per frame
@@ -18,13 +22,13 @@ public class SharkController : MonoBehaviour
         {
             Vector3 playerPosition = PlayerTester.playerInstance.transform.position;
             float moveRate;
-            if (PlayerTester.playerInstance.InVision(transform.position, 0.1f))
+            if (PlayerTester.playerInstance.InVision(transform.position, detectionAngle))
             {
-                moveRate = -0.3f;
+                moveRate = retreatSpeed;
             }
             else
             {
-                moveRate = 1f;
+                moveRate = approachSpeed;
             }
 
             transform.rotation = Quaternion.LookRotation(playerPosition - transform.position);

@@ -5,14 +5,26 @@ using UnityEngine;
 // Swims towards player, if seen, attempts to swim out of view
 public class OrcaController : MonoBehaviour
 {
-    private float swimSpeed = 1;
-    private SecondOrderDynamics dynamics; 
+    [Header("Second Order Dynamics Tuning")]
+    [SerializeField] private float frequency = 0.5f;
+    [SerializeField] private float damping = 1f;
+    [SerializeField] private float response = 2f;
+
+    [Header("Orca Speeds")]
+    [SerializeField] private float wanderSpeed = 1f;
+    [SerializeField] private float escapeSpeed = 4f;
+    private float swimSpeed;
+
+    [Header("Vision Threshold")]
+    [SerializeField] private float visionThreshold = 0.1f;
+
+    private SecondOrderDynamics dynamics;
     // Start is called before the first frame update
     void Start()
     {
         
         // SOD initializer
-        dynamics = new SecondOrderDynamics(transform.position, 0.5f, 1, 2);
+        dynamics = new SecondOrderDynamics(transform.position, frequency, damping, response);
     }
 
     // Update is called once per frame
@@ -23,10 +35,10 @@ public class OrcaController : MonoBehaviour
             Vector3 swimDirection;
             Vector3 playerPosition = PlayerTester.playerInstance.transform.position;
 
-            if (!PlayerTester.playerInstance.InVision(transform.position, 0.1f))
+            if (!PlayerTester.playerInstance.InVision(transform.position, visionThreshold))
             {
                 swimDirection = (PlayerTester.playerInstance.transform.position - transform.position).normalized;
-                swimSpeed = 1;
+                swimSpeed = wanderSpeed;
             }
             else
             {
@@ -44,7 +56,7 @@ public class OrcaController : MonoBehaviour
                 visionPosition *= -1;
 
                 swimDirection = visionPosition.x * cameraX + visionPosition.y * cameraY;
-                swimSpeed = 4;
+                swimSpeed = escapeSpeed;
             }
 
             dynamics.Increment(swimDirection * swimSpeed, Time.deltaTime);

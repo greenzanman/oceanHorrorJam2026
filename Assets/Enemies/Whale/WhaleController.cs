@@ -4,10 +4,22 @@ using UnityEngine.Events;
 // Floats in random directions, goes towards sounds
 public class WhaleController : MonoBehaviour
 {
+    [Header("Second Order Dynamics Tuning")]
+    [SerializeField] private float frequency = 0.5f;
+    [SerializeField] private float damping = 1f;
+    [SerializeField] private float response = 2f;
+
+    [Header("Whale Speeds")]
+    [SerializeField] private float wanderSpeed = 1f;
+    [SerializeField] private float escapeSpeed = 4f;
+
+    [Header("Vision Threshold")]
+    [SerializeField] private float visionThreshold = 0.1f;
+
     private Vector3 facingDirection;
     private Vector3 goalDirection;
     private Vector3 flatFacing;
-    private SecondOrderDynamics dynamics; 
+    private SecondOrderDynamics dynamics;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +36,7 @@ public class WhaleController : MonoBehaviour
         goalDirection = facingDirection;
 
         // SOD initializer
-        dynamics = new SecondOrderDynamics(transform.position, 0.5f, 1, 2);
+        dynamics = new SecondOrderDynamics(transform.position, frequency, damping, response);
     }
 
     // Update is called once per frame
