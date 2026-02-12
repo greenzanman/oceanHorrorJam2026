@@ -33,7 +33,7 @@ public class PlayerTester : MonoBehaviour
     public bool InVision(Vector3 position, float border = 0.0f)
     {
         Vector3 pos = playerCamera.WorldToScreenPoint(position);
-        if (pos.x / Screen.width < -border || pos.y / Screen.width < -border 
+        if (pos.x / Screen.width < -border || pos.y / Screen.height < -border 
             || pos.x / Screen.width > 1 + border || pos.y / Screen.height > 1 + border)
             return false;
         return true;
