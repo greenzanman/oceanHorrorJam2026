@@ -318,21 +318,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed4b0cabab79fc04eafae7b8e86f4adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalStrokeForce: 0
-  verticalDuration: 0.5
-  verticalForceMultiplier: 1.6
+  horizontalStrokeForce: 0.2
+  verticalDuration: 1.2
+  verticalForceMultiplier: 3
   verticalForceCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
+    - serializedVersion: 3
+      time: 0.034497127
+      value: -0.107304275
+      inSlope: 5.0882616
+      outSlope: 5.0882616
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.066692024
     - serializedVersion: 3
       time: 1
       value: 1
@@ -345,8 +354,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  strokeCooldownSeconds: 1
-  strokeInputBufferSeconds: 0.3
+  staleFactor: 0.7
+  recoveryRate: 0.5
+  minStaleThreshold: 0.2
 --- !u!1 &84015341
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,8 +2078,8 @@ GameObject:
   - component: {fileID: 1922838611}
   - component: {fileID: 1922838614}
   - component: {fileID: 1922838613}
-  - component: {fileID: 1922838612}
   - component: {fileID: 1922838616}
+  - component: {fileID: 1922838617}
   m_Layer: 3
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2128,36 +2138,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1922838612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922838610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: eb097e4910fbb57788f630402b3c7a1b, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &1922838613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2238,6 +2218,36 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1922838617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922838610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: eb097e4910fbb57788f630402b3c7a1b, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 1922838611}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
