@@ -150,3 +150,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e03ed88c2c4e1a4f8e1c797000bec99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goalRadius: 2.5
+  moveSpeed: 2.04
+  fearMultiplier: 2.96
+  scatterMin: 7
+  scatterMax: 12
+  neighborDistance: 0.3
+  separationDistance: 0.27
+  weightSeparation: 1.5
+  weightAlignment: 0.31
+  weightCohesion: 0.33
+  weightGoal: 0.51

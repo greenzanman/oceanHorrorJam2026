@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// sonar ping sphere expands from player location of when "Fire" action pressed
+// - after pressing Fire, the pingage starts at 0 and increases over time until pingDuration is reached
+// - the sphere goes bigger wrt pingAge 
 public class SonarPingSphere : MonoBehaviour
 {
 
@@ -16,7 +19,8 @@ public class SonarPingSphere : MonoBehaviour
     [SerializeField] private float initialDelay = 0;
     [SerializeField] private float delay = 0;
     
-
+    private float revealDelay;
+    private bool isInitialized = false;
     private float pingAge = 0;
     private float currentRadius;
     [SerializeField] private bool looping = true;
@@ -26,12 +30,18 @@ public class SonarPingSphere : MonoBehaviour
         = new HashSet<SonarShaderObject>();
 
     // Start is called before the first frame update
-    void Start()
+    public void Initialize(float pingDuration, float pingRadius, float revealDelay)
     {
         // Grab a ticket
         GrabTicket();
 
         pingAge = -initialDelay;
+        this.pingDuration = pingDuration;
+        this.pingRadius = pingRadius;
+        this.revealDelay = revealDelay;
+
+        transform.localScale = Vector3.zero;
+        isInitialized = true;
 
         // Reset seens
         shaderObjects.Clear();
@@ -46,11 +56,15 @@ public class SonarPingSphere : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isInitialized)
+            return;
+
         pingAge += Time.deltaTime;
 
         if (pingAge < 0)
             return;
 
+        pingAge += Time.deltaTime;
         if (pingAge > pingDuration)
         {
             if (looping)
@@ -69,6 +83,7 @@ public class SonarPingSphere : MonoBehaviour
             else
             {
                 Destroy(gameObject);
+                return;
             }
         }
 
@@ -86,7 +101,7 @@ public class SonarPingSphere : MonoBehaviour
             shaderObject.HandlePing(transform.position, currentRadius / 2, pingRadius / 2, thisPingId);
         }
     }
-
+    
     void OnTriggerEnter(Collider other)
     {
         SonarShaderObject shaderObject = other.GetComponent<SonarShaderObject>();

@@ -1,21 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// Swims towards player, if seen, attempts to swim out of view
 public class OrcaController : MonoBehaviour
 {
-    private float swimSpeed = 1;
-    private SecondOrderDynamics dynamics; 
-    // Start is called before the first frame update
+    [Header("Second Order Dynamics Tuning")]
+    [SerializeField] private float frequency = 1.0f;        // Snappy horizontal
+    [SerializeField] private float verticalFrequency = 0.4f; // Heavy vertical
+    [SerializeField] private float damping = 1f;
+    [SerializeField] private float response = 2f;
+
+    [Header("Orca Speeds")]
+    [SerializeField] private float wanderSpeed = 1f;
+    [SerializeField] private float escapeSpeed = 4f;
+    private float swimSpeed;
+
+    [Header("Vision Threshold")]
+    [SerializeField] private float visionThreshold = 0.1f;
+
+    [Header("Horizontal Baseline")]
+    [SerializeField] private float baselinePullStrength = 2.0f; 
+    [Range(0, 1)] 
+    [SerializeField] private float verticalIntentSquash = 0.2f;
+
+    private SecondOrderDynamics xzDynamics;
+    private SecondOrderDynamics yDynamics;
+
     void Start()
     {
-        
-        // SOD initializer
-        dynamics = new SecondOrderDynamics(transform.position, 0.5f, 1, 2);
+        // horizontal and vertical dynamics
+        xzDynamics = new SecondOrderDynamics(transform.position, frequency, damping, response);
+        yDynamics = new SecondOrderDynamics(transform.position, verticalFrequency, damping, response);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (PlayerTester.playerInstance != null)
@@ -23,33 +38,64 @@ public class OrcaController : MonoBehaviour
             Vector3 swimDirection;
             Vector3 playerPosition = PlayerTester.playerInstance.transform.position;
 
-            if (!PlayerTester.playerInstance.InVision(transform.position, 0.1f))
+            // --- STEP 1: GOAL / INTENT ---
+            // swim to player if not spotted, otherwise flee
+            if (!PlayerTester.playerInstance.InVision(transform.position, visionThreshold))
             {
-                swimDirection = (PlayerTester.playerInstance.transform.position - transform.position).normalized;
-                swimSpeed = 1;
+                swimDirection = (playerPosition - transform.position).normalized;
+                swimSpeed = wanderSpeed;
             }
             else
             {
-                // If in vision, find a good direction to run
                 Vector2 visionPosition = PlayerTester.playerInstance.InVisionPos(transform.position);
 
-                Vector3 camDirection = PlayerTester.playerInstance.cameraFacing();
+                Vector3 camDirection = PlayerTester.playerInstance.CameraFacing();
                 Vector3 cameraX = Vector3.Cross(camDirection, Vector3.up).normalized;
                 Vector3 cameraY = Vector3.Cross(camDirection, cameraX).normalized;
 
-                // Find closest direction out of camera
                 visionPosition.x -= 0.5f;
                 visionPosition.y -= 0.5f;
+                
+                // Bias Y to favor horizontal exits
+                visionPosition.y *= 4.0f; 
+
                 visionPosition.Normalize();
                 visionPosition *= -1;
 
                 swimDirection = visionPosition.x * cameraX + visionPosition.y * cameraY;
-                swimSpeed = 4;
+                swimSpeed = escapeSpeed;
             }
 
-            dynamics.Increment(swimDirection * swimSpeed, Time.deltaTime);
-            transform.position = dynamics.smoothedPosition;
-            transform.rotation = Quaternion.LookRotation(dynamics.smoothedVelocity);
+            // --- STEP 2: SQUASH VERTICAL, YO ---
+            Vector3 targetVelocity = swimDirection * swimSpeed;
+
+            // reduce vertical intent
+            float verticalDesire = targetVelocity.y * verticalIntentSquash;
+            // pull toward player's Y level
+            float distToBaseline = playerPosition.y - transform.position.y;
+            float targetVelY = verticalDesire + (distToBaseline * baselinePullStrength);
+
+            // --- STEP 3: UPDATE PHYSICS ---
+            xzDynamics.Increment(new Vector3(targetVelocity.x, 0, targetVelocity.z), Time.deltaTime);
+            yDynamics.Increment(new Vector3(0, targetVelY, 0), Time.deltaTime);
+
+            // --- STEP 4: APPLY FINAL POSITION & ROTATION ---
+            transform.position = new Vector3(
+                xzDynamics.smoothedPosition.x, 
+                yDynamics.smoothedPosition.y, 
+                xzDynamics.smoothedPosition.z
+            );
+
+            Vector3 combinedVelocity = new Vector3(
+                xzDynamics.smoothedVelocity.x, 
+                yDynamics.smoothedVelocity.y, 
+                xzDynamics.smoothedVelocity.z
+            );
+
+            if (combinedVelocity.sqrMagnitude > 0.01f)
+            {
+                transform.rotation = Quaternion.LookRotation(combinedVelocity);
+            }
         }
     }
 }

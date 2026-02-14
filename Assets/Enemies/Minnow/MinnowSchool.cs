@@ -6,7 +6,8 @@ using UnityEngine;
 // Floats around aimlessly, scatters if there's a sound nearby
 public class MinnowSchool : MonoBehaviour
 {
-    private const float alertDistance = 12;
+    [Header("Minnow School Tuning")]
+    [SerializeField] private float alertDistance = 12f;
     private MinnowIndividual[] minnows;
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,8 @@ public class MinnowSchool : MonoBehaviour
     {
         foreach (MinnowIndividual minnow in minnows)
         {
-            minnow.ProcessMinnow(Time.deltaTime);
+            // Pass the array of minnows so they can calculate neighbor forces
+            minnow.ProcessMinnow(Time.deltaTime, minnows);
         }
     }
 
