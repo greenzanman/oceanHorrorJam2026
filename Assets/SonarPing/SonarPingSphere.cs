@@ -23,14 +23,14 @@ public class SonarPingSphere : MonoBehaviour
     private bool isInitialized = false;
     private float pingAge = 0;
     private float currentRadius;
-    [SerializeField] private bool looping = true;
+    [SerializeField] private bool looping = false;
 
     // Track all 'seen' objects
     private HashSet<SonarShaderObject> shaderObjects
         = new HashSet<SonarShaderObject>();
 
     // Start is called before the first frame update
-    public void Initialize(float pingDuration, float pingRadius, float revealDelay)
+    public void Initialize(float pingDuration, float pingRadius, float revealDelay, bool looping = false)
     {
         // Grab a ticket
         GrabTicket();
@@ -39,6 +39,7 @@ public class SonarPingSphere : MonoBehaviour
         this.pingDuration = pingDuration;
         this.pingRadius = pingRadius;
         this.revealDelay = revealDelay;
+        this.looping = false;
 
         transform.localScale = Vector3.zero;
         isInitialized = true;
