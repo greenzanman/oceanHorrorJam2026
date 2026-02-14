@@ -6,7 +6,7 @@ public class SonarShaderObject : MonoBehaviour {
     private List<Vector4> positionIntensities = new List<Vector4>(); // (x, y, z, intensity)
     private const int MAX_SIMULTANEOUS_PINGS = 8;
     private const float START_INTENSITY = 0.7f;
-    private const float FADEOUT_TIME = 12;
+    private const float FADEOUT_TIME = 1.5f;
     // Map from ids to position intensities
     private Dictionary<int, int> idToPosition = new Dictionary<int, int>();
     private List<float> radii = new List<float>();
