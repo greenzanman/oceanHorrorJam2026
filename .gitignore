@@ -123,6 +123,3 @@ InitTestScene*.unity*
 
 # Log files can be ignored.
 fmod_editor.log
-
-# Lock changes to vscode settings
-.vscode/settings.json
