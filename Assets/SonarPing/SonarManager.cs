@@ -35,11 +35,6 @@ public class SonarManager : MonoBehaviour
             return;
         }
 
-
-        // setup
-        fireAction  = playerInput.actions["Fire"];
-        if (fireAction != null)
-            fireAction.performed += OnFire;  // attach that inputaction to our OnFire
     }
 
     // Update is called once per frame
@@ -48,9 +43,8 @@ public class SonarManager : MonoBehaviour
         
     }
 
-    private void OnFire(InputAction.CallbackContext context)
+    public void OnFire()
     {
-        // start ping burst coroutine
         StartCoroutine(PingBurstRoutine());
     }
 
@@ -70,11 +64,5 @@ public class SonarManager : MonoBehaviour
         Instantiate(pingPrefab, playerInput.transform.position, Quaternion.identity)
             .GetComponent<SonarPingSphere>()
             .Initialize(pingDuration, pingRadius, revealDelay);
-    }
-
-    void OnDestroy()
-    {
-        if (fireAction != null)
-            fireAction.performed -= OnFire;  // cleanup: dettach that inputaction to our OnFire
     }
 }
