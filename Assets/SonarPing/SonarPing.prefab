@@ -98,11 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b582af99a4778449894a7872b6bbba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  material: {fileID: 2100000, guid: 1d0c3c2ddb07bd349b2c6bfe75c6c75b, type: 2}
-  pingDuration: 3
-  pingRadius: 50
-  delay: 0
-  looping: 1
+  meshRenderer: {fileID: 4509107401188799582}
 --- !u!135 &9153605373831539629
 SphereCollider:
   m_ObjectHideFlags: 0

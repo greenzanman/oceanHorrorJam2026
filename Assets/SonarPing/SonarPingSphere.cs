@@ -1,121 +1,83 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-// sonar ping sphere expands from player location of when "Fire" action pressed
-// - after pressing Fire, the pingage starts at 0 and increases over time until pingDuration is reached
-// - the sphere goes bigger wrt pingAge 
+// sonar ping sphere used to track individual expanding rings
+// - their radius and intensity are read by the SonarManager and passed to the shader
+// - the sphere DOES NOT RENDER right now, but helpful for debugging and future visual effects (like a mesh ring or particle burst at the ping origin) 
 public class SonarPingSphere : MonoBehaviour
 {
+    // Public Properties that the SonarManager reads
+    public float CurrentRadius { get; private set; }
+    public float CurrentIntensity { get; private set; }
 
-    // Ping id's (so each is individually tracked)
-    private static int pingId = 0;
-    public int thisPingId;
-
-    public Material material;
-    [SerializeField] private float pingDuration = 2;
-    [SerializeField] private float pingRadius = 10;
-    [SerializeField] private float initialDelay = 0;
-    [SerializeField] private float delay = 0;
-    
-    private float revealDelay;
+    private float maxRange;
+    private float speed;
+    private float age;
     private bool isInitialized = false;
-    private float pingAge = 0;
-    private float currentRadius;
-    [SerializeField] private bool looping = false;
 
-    // Track all 'seen' objects
-    private HashSet<SonarShaderObject> shaderObjects
-        = new HashSet<SonarShaderObject>();
+    // get our owwn renderer for the color
+    [SerializeField] private Renderer meshRenderer; 
 
-    // Start is called before the first frame update
-    public void Initialize(float pingDuration, float pingRadius, float revealDelay, bool looping = false)
+    public void Initialize(float range, float scannerSpeed)
     {
-        // Grab a ticket
-        GrabTicket();
-
-        pingAge = -initialDelay;
-        this.pingDuration = pingDuration;
-        this.pingRadius = pingRadius;
-        this.revealDelay = revealDelay;
-        this.looping = false;
-
-        transform.localScale = Vector3.zero;
+        this.maxRange = range;
+        this.speed = scannerSpeed;
+        this.age = 0;
+        this.CurrentRadius = 0;
+        this.CurrentIntensity = 1;
+        
         isInitialized = true;
 
-        // Reset seens
-        shaderObjects.Clear();
+        // Register with Manager so the Terrain knows about us
+        if (SonarManager.Instance != null)
+            SonarManager.Instance.RegisterPing(this);
     }
 
-    private void GrabTicket()
-    {
-        thisPingId = pingId;
-        pingId++;
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (!isInitialized)
-            return;
+        if (!isInitialized) return;
 
-        pingAge += Time.deltaTime;
+        // 1. Calculate Growth
+        age += Time.deltaTime;
+        CurrentRadius = age * speed;
 
-        if (pingAge < 0)
-            return;
+        // 2. Calculate Fade (Intensity goes from 1 to 0)
+        // We fade out as we approach max range
+        float percentComplete = CurrentRadius / maxRange;
+        CurrentIntensity = 1.0f - percentComplete;
 
-        pingAge += Time.deltaTime;
-        if (pingAge > pingDuration)
+        // 3. Physical Scale (Visual Sphere size)
+        transform.localScale = Vector3.one * CurrentRadius * 2; // *2 because radius vs diameter
+
+        // 4. Update own material color (Optional, for the sphere mesh itself)
+        if (meshRenderer != null)
         {
-            if (looping)
-            {
-                pingAge -= pingDuration + delay;
-                transform.localScale = Vector3.zero;
-
-                // Grab a ticket
-                GrabTicket();
-    
-                // Reset seens
-                shaderObjects.Clear();
-    
-                return;
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
+            Color c = meshRenderer.material.color;
+            c.a = CurrentIntensity; // Fade out alpha
+            meshRenderer.material.color = c;
         }
 
-        // Change scale and transform
-        currentRadius = pingAge / pingDuration * pingRadius;
-        transform.localScale = new Vector3(currentRadius, currentRadius, currentRadius);
-        
-        // Fade out near edges
-        material.SetColor("_Color", new Color(1 - pingAge / pingDuration - 0.25f, 0, 0, 1));
-    
-        // Handle shader objects
-        foreach (SonarShaderObject shaderObject in shaderObjects)
+        // 5. Kill when done
+        if (CurrentRadius > maxRange || CurrentIntensity <= 0)
         {
-            // Scale of sphere is 0.5, so must divide radii by 2
-            shaderObject.HandlePing(transform.position, currentRadius / 2, pingRadius / 2, thisPingId);
-        }
-    }
-    
-    void OnTriggerEnter(Collider other)
-    {
-        SonarShaderObject shaderObject = other.GetComponent<SonarShaderObject>();
-        if (shaderObject != null)
-        {
-            shaderObjects.Add(shaderObject);
-            shaderObject.HandlePing(transform.position, currentRadius / 2, pingRadius / 2, thisPingId);
+            DestroyPing();
         }
     }
 
-    private IEnumerator DelayedReveal(SonarObject sonarObject)
+    void OnDestroy()
     {
-        // Fade in to 1.5 over revealDelay seconds with cubic ease-in
-        yield return sonarObject.FadeToOpacity(1.5f, revealDelay);
+        DestroyPing();
+    }
+
+    private bool isDestroyed = false;
+
+    private void DestroyPing()
+    {
+        if (isDestroyed) return;
+        isDestroyed = true;
+
+        // Unregister before dying so the shader stops drawing the ring
+        if (SonarManager.Instance != null)
+            SonarManager.Instance.UnregisterPing(this);
+        Destroy(gameObject);
     }
 }
