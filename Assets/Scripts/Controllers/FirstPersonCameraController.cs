@@ -3,15 +3,22 @@ using UnityEngine.InputSystem;
 
 public class FirstPersonCameraController : MonoBehaviour
 {
-    public float sensitivity = 0.1f;
+    public float sensitivity = 0.2f;
 
     private float xRotation = 0f;
     private Transform playerBody;
     private Rigidbody playerRb;
 
     // stored mouse input deltas to use
-    private float mouseX; 
+    private float mouseX;
     private float mouseY;
+
+    // smoothing variables
+    private float smoothMouseX;
+    private float smoothMouseY;
+    private float smoothMouseXVelocity;
+    private float smoothMouseYVelocity;
+    public float smoothTime = 0.2f;
 
     void Start()
     {
@@ -28,25 +35,26 @@ public class FirstPersonCameraController : MonoBehaviour
         mouseY = lookInput.y * sensitivity;
     }
 
-    // run camera rotation after game logic (Update) but before rendering
+    // run camera and player rotation after game logic (Update) but before rendering
     void LateUpdate()
     {
-        xRotation -= mouseY;
+        // Apply smoothing to mouse input using SmoothDamp
+        smoothMouseX = Mathf.SmoothDamp(smoothMouseX, mouseX, ref smoothMouseXVelocity, smoothTime);
+        smoothMouseY = Mathf.SmoothDamp(smoothMouseY, mouseY, ref smoothMouseYVelocity, smoothTime);
+
+        // Vertical rotation (pitch)
+        xRotation -= smoothMouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-    }
 
-    // run player body rotation in sync with physics updates
-    void FixedUpdate()
-    {
-        if (playerRb != null)
+        // Horizontal rotation (yaw)
+        if (playerBody != null)
         {
-            // Rotate the Rigidbody safely
-            Quaternion deltaRotation = Quaternion.Euler(Vector3.up * mouseX);
-            playerRb.MoveRotation(playerRb.rotation * deltaRotation);
-            
-            // clear horiz spin
-            mouseX = 0; 
+            playerBody.Rotate(Vector3.up * smoothMouseX);
         }
+
+        // Clear mouse deltas after applying
+        mouseX = 0;
+        mouseY = 0;
     }
 }
