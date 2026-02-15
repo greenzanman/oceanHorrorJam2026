@@ -318,7 +318,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d63d8923c78a58bbd401ac8f4280cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableUpDown: 1
   thrust: 10
+  gravity: 1.62
 --- !u!114 &3819827597409437903
 MonoBehaviour:
   m_ObjectHideFlags: 0
