@@ -31,6 +31,7 @@ Shader "Custom/ObjectPingShader" {
             uniform float _SonarFadeStrength;
             uniform float _SonarGridScale;
             uniform float _SonarDotSize;
+            uniform float _SceneViewVisibility; // Added for Scene View visibility
 
             // --- ARRAYS ---
             uniform int _PointCount;
@@ -84,7 +85,31 @@ Shader "Custom/ObjectPingShader" {
                 fixed4 finalColor = _SonarBaseColor * h * pattern;
                 
                 // Ensure Alpha is 1.0 so it is treated as a solid object
-                finalColor.a = 1.0; 
+                finalColor.a = 1.0;
+
+                // --- IMPROVED VISIBILITY LOGIC (Clay Render) ---
+                if (_SceneViewVisibility > 0) {
+                    // 1. Calculate the "Normal" (facing direction) of this pixel automatically
+                    float3 visibleNormal = normalize(cross(ddy(input.worldPos), ddx(input.worldPos)));
+
+                    // 2. Create a fake "Sun" direction (coming from top-left)
+                    float3 fakeLightDir = normalize(float3(-1, 2, -1));
+
+                    // 3. Calculate simple brightness (Dot Product)
+                    float lightIntensity = saturate(dot(visibleNormal, fakeLightDir));
+
+                    // 4. Add a "Rim Light" effect so edges stand out
+                    float3 viewDir = normalize(_WorldSpaceCameraPos - input.worldPos);
+                    float rim = 1.0 - saturate(dot(viewDir, visibleNormal));
+
+                    // 5. Combine: Dark Grey Base + Lighting + Rim
+                    float3 debugColor = float3(0.1, 0.1, 0.1);
+                    debugColor += lightIntensity * 0.3;
+                    debugColor += rim * 0.2;
+
+                    // Add this on top of the sonar visuals
+                    finalColor.rgb += debugColor * _SceneViewVisibility;
+                }
 
                 return finalColor;
             }

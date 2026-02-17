@@ -1,10 +1,17 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
+using UnityEditor.EditorTools;
 using UnityEngine;
-using UnityEngine.UI;
+
+public enum PanelType
+{
+    // these will  be the keys for the panel lookup dictionary.
+    DefaultPanel,
+    InventoryPanel,
+    DescriptionPanel,
+    MenuPanel,
+    SettingsPanel
+}
 
 /*
 Manages the display of UI panels. Panels must be tagged with "UIPanel" and added to the panels list in the inspector.
@@ -15,18 +22,26 @@ public class UIPanelManager : MonoBehaviour
 {
     public static UIPanelManager Instance { get; private set; }
 
+    [System.Serializable]
+    public struct PanelEntry
+    {
+        public PanelType type;      // The Key (Enum)
+        public GameObject panelObj; // The Value (Prefab/Object)
+    }
+
     public static Action<Vector2> onMoveInput;
 
-    [SerializeField] private List<GameObject> panels;
+    [SerializeField] private List<PanelEntry> panelEntries;
+    private Dictionary<PanelType, GameObject> panelLookup;
 
-    [SerializeField] private GameObject defaultPanel = null;
-    private Dictionary<string, GameObject> panelLookup;
+    [Tooltip("the panel to show when others are closed")]
+    [SerializeField] private PanelType defaultPanelType = PanelType.DefaultPanel;
 
     private GameObject currentPanel;
 
     private void Awake()
     {
-        Debug.Log("Panel manager awake.");
+        // Debug.Log("Panel manager awake.");
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -35,156 +50,126 @@ public class UIPanelManager : MonoBehaviour
 
         Instance = this;
 
-        panelLookup = new Dictionary<string, GameObject>();
-        foreach (var panel in panels)
+        panelLookup = new Dictionary<PanelType, GameObject>();
+        foreach (var entry in panelEntries)
         {
-            if (!panel.CompareTag("UIPanel"))
+            if (entry.panelObj != null && !panelLookup.ContainsKey(entry.type))
             {
-                Debug.LogWarning("Panel " + panel.name + " does not have the UIPanel tag. Skipping.");
+                panelLookup.Add(entry.type, entry.panelObj);
+                // Ensure panels start hidden
+                entry.panelObj.SetActive(false); 
             }
-            panelLookup[panel.name] = panel;
-            panel.SetActive(true);
-            panel.SetActive(false);
         }
-        // Add current panel to lookup if it's not already there and has the correct tag
-        if(defaultPanel != null && !panelLookup.ContainsKey(defaultPanel.name) && defaultPanel.CompareTag("UIPanel"))
-        {
-            panelLookup[defaultPanel.name] = defaultPanel;
-        }
-        // If a current panel is set, display it.
-        DisplayPanel(panelLookup[defaultPanel.name]);
-        currentPanel = defaultPanel;
+        // If a current panel is set with defaultPanel, display it.
+        ShowPanel(defaultPanelType);
     }
 
     void Start()
     {
         //UIController.onInventory += ToggleInventory;
         UIController.onMenu += ToggleMenu;
-        Interactable.OnInteract += HandleInteract;
         UIController.onDescription += ToggleDescription;
-        UIController.onMoveInput += HandleMoveInput; // Ensure we start with no movement input
+        UIController.onMoveInput += HandleMoveInput;
     }
 
-    public bool ShowPanel(string panelName)
+    // show panel and update ref to currentPanel gameobject 
+    public void ShowPanel(PanelType panelType)
     {
-        if (!panelLookup.ContainsKey(panelName))
+        if (panelLookup.TryGetValue(panelType, out GameObject panelToOpen))
         {
-            Debug.LogError("Panel " + panelName + " not found in UIPanelManager.");
-            return false;
-        }
+            // abort if already on the panel to open
+            if (currentPanel == panelToOpen) return;
 
-        return DisplayPanel(panelLookup[panelName]);
-    }
-    private bool DisplayPanel(GameObject panelNode)
-    {
-        if (panelNode == null)
-        {
-            Debug.LogError("Attempting to display a null panel node.");
-            return false;
+            // Close current, open new
+            if (currentPanel != null) currentPanel.SetActive(false);
+            
+            panelToOpen.SetActive(true);
+            Debug.Log($"UIPanelManager: Switched from panel: {currentPanel} to panel: {panelToOpen}");
+            currentPanel = panelToOpen;
         }
-
-        if (currentPanel != null && currentPanel.name == panelNode.name)
+        else
         {
-            Debug.LogWarning("Panel " + panelNode.name + " is already active.");
-            return false;
+            Debug.LogError($"UIPanelManager: No panel registered for panelType: {panelType}");
         }
-
-        if(panelNode.GetComponent<NextPanels>() == null)
-        {
-            Debug.LogWarning("Panel " + panelNode.name + " does not have a NextPanels component. It will be displayed without validation.");
-        }
-
-        if(currentPanel != null && 
-        currentPanel.GetComponent<NextPanels>() != null && 
-        !currentPanel.GetComponent<NextPanels>().GetNextPanels().Contains(panelNode))
-        {
-            Debug.LogWarning("Panel " + panelNode.name + " is not a valid next panel for " + currentPanel.name);
-            return false;
-        }
-        if (currentPanel != null)
-            currentPanel.SetActive(false);
-        panelNode.SetActive(true);
-        currentPanel = panelNode;
-        return true;
     }
 
-    public bool HideCurrent()
+    public void HideCurrent()
     {        
-        if (currentPanel == null)
-        {
-            Debug.LogWarning("No current panel to hide.");
+        ShowPanel(defaultPanelType);
+    }
+
+    public bool IsCurrentPanel(PanelType panelType)
+    {
+        // check if we have a current panel
+        if (currentPanel == null) {
+            Debug.LogWarning("No current panel is active.");
             return false;
         }
-        return ShowPanel(defaultPanel.name);
-    }
 
-    public bool IsCurrentPanel(string panelName)
-    {
-        return currentPanel != null && currentPanel.name == panelName;
-    }
-
-    void ToggleInventory()
-    {
-        bool isInventoryOpen = IsCurrentPanel("Inventory Panel");
-        if (!isInventoryOpen && ShowPanel("Inventory Panel"))
+        // try to return the gameobj for this panel type
+        if (panelLookup.TryGetValue(panelType, out GameObject panelObj))
         {
-            Time.timeScale = 0f;
-        } else if (isInventoryOpen && HideCurrent())
-        {
-            Time.timeScale = 1f;
-        } else
-        {
-            Debug.LogWarning("Failed to toggle inventory panel.");
+            return currentPanel == panelObj;
         }
+
+        Debug.LogError($"BAD: No panel registered for {panelType}. Check UIPanelManager inspector.");
+        return false;
     }
 
-    void ToggleDescription()
+    public void TogglePanel(PanelType panelType)
     {
-        bool isDescriptionOpen = IsCurrentPanel("Description Panel");
-        if (!isDescriptionOpen && ShowPanel("Description Panel"))
-        {
-            Time.timeScale = 0f;
-        } else if (isDescriptionOpen && HideCurrent())
-        {
-            ShowPanel("Inventory Panel");
-            Time.timeScale = 1f;
-        } else
-        {
-            Debug.LogWarning("Failed to toggle description panel.");
-        }
-    }   
+        bool isOpen = IsCurrentPanel(panelType);
 
-    void ToggleMenu()
-    {
-        bool isMenuOpen = !IsCurrentPanel("Default Panel");
-        if (!isMenuOpen && ShowPanel("Menu Panel"))
+        if (!isOpen)
         {
-            Time.timeScale = 0f;
-        } else if (isMenuOpen && HideCurrent())
+            ShowPanel(panelType);
+            Time.timeScale = 0f; // pause gameplay
+        }
+        else
         {
-            Time.timeScale = 1f;
-        } else
-        {
-            Debug.LogWarning("Failed to toggle menu panel.");
+            HideCurrent(); // go back to default ui
+            Time.timeScale = 1f; // unpause gameplay
         }
     }
 
 
-    void HandleInteract(Interactable interactable)
+    // shortcut toggles for individual panels
+    public void ToggleInventory()
     {
-        // Toggles inventory if interactable is the computer. 
-        if (interactable.name == "Computer")
+        TogglePanel(PanelType.InventoryPanel);
+    }
+
+
+    // NOTE: toggling description is different because its WITHIN inventory panel
+    // - so dont pause gameplay
+    public void ToggleDescription()
+    {
+        bool isDescOpen = IsCurrentPanel(PanelType.DescriptionPanel);
+
+        if (!isDescOpen)
         {
-            ToggleInventory();
+            ShowPanel(PanelType.DescriptionPanel);
+            Time.timeScale = 0f; 
         }
+        else
+        {
+            // CLOSE IT -> GO BACK TO INVENTORY
+            ShowPanel(PanelType.InventoryPanel);
+            Time.timeScale = 0f; 
+        }
+    }
+
+    public void ToggleMenu()
+    {
+        TogglePanel(PanelType.MenuPanel);
     }
 
     void HandleMoveInput(Vector2 input)
     {
-        Debug.Log("Received move input: " + input);
-        if (!IsCurrentPanel("Inventory Panel"))
+        // Debug.Log("Received move input: " + input);
+        if (!IsCurrentPanel(PanelType.InventoryPanel))
         {
-            // Do nothing on move input, just prevent further movement handling
+            // IF NOT IN INVENTORY Do nothing on move input, just prevent further movement handling
             
             return;
         }

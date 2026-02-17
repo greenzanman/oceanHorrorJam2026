@@ -2,42 +2,66 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
+using TMPro;
 
 public class Pickup : MonoBehaviour, Actionable
 {
+    [Header("UI Settings")]
+    [SerializeField] private GameObject interactionPrompt; // world space canvas with text child
+    [SerializeField] private bool showBtnPrompt = false;
+
+    [Header("Visuals")]
+    [SerializeField] private MeshRenderer meshRenderer;
+    private MaterialPropertyBlock propBlock;
+
+
+    [Header("Pickup Settings")]
     [SerializeField] private string shortDescription = "Put your description here.";
     [SerializeField] private string longDescription = "Put your description here.";
+    
     // Declare the event with the pickup as parameter
     public static event Action<Pickup> OnInteract;
-    [SerializeField] private bool inView = false;
 
     void Awake()
     {
-        UIController.onInteractInput += SafeFire;
-    }
-    public void SetInView(bool isInView)
-    {
-        inView = isInView;
+        propBlock = new MaterialPropertyBlock();
+        if(interactionPrompt) interactionPrompt.SetActive(false);
     }
 
-    public bool CheckIsInView()
-    {
-        return inView;
-    }
 
     public void Fire()
     {
-        // Trigger the event
+        // Trigger the event for PickUpUI
         OnInteract?.Invoke(this);
-        // Destroy the pickup object
-        //Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
-    public void SafeFire()
+    public void SetFocus(bool focused)
     {
-        if (CheckIsInView())
+        if (interactionPrompt)
         {
-            Fire();
+            interactionPrompt.SetActive(focused && showBtnPrompt);
+            
+            if (focused && showBtnPrompt)
+            {
+                // Get the text component in your world-space prompt
+                var txt = interactionPrompt.GetComponentInChildren<TextMeshProUGUI>();
+                if (txt != null)
+                {
+                    // Finds the binding for "Interact" and turns it into a string like "E" or "A"
+                    var action = PlayerInput.all[0].actions["Interact"];
+                    txt.text = $"Press [{action.GetBindingDisplayString()}] to Interact";
+                }
+            }
+        }
+
+        // Shader logic remains the same
+        if (meshRenderer != null)
+        {
+            meshRenderer.GetPropertyBlock(propBlock);
+            propBlock.SetFloat("_HighlightLevel", focused ? 1.0f : 0.0f);
+            meshRenderer.SetPropertyBlock(propBlock);
         }
     }
 

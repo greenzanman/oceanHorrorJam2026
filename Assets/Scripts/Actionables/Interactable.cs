@@ -5,37 +5,28 @@ using System;
 
 public class Interactable : MonoBehaviour, Actionable
 {
-    // Declare the event with the pickup as parameter
-    public static event Action<Interactable> OnInteract;
-    [SerializeField] private bool inView = false;
+    [SerializeField] private GameObject interactionPrompt;
+    [SerializeField] private bool showBtnPrompt = true;
+    [SerializeField] private MeshRenderer meshRenderer;
+    
+    private MaterialPropertyBlock propBlock;
 
-    void Awake()
-    {
-        UIController.onInteractInput += SafeFire;
-    }
-    public void SetInView(bool isInView)
-    {
-        inView = isInView;
-    }
+    void Awake() => propBlock = new MaterialPropertyBlock();
 
-    public bool CheckIsInView()
+    public void SetFocus(bool focused)
     {
-        return inView;
+        if(interactionPrompt) interactionPrompt.SetActive(focused && showBtnPrompt);
+        if (meshRenderer != null)
+        {
+            meshRenderer.GetPropertyBlock(propBlock);
+            propBlock.SetFloat("_HighlightLevel", focused ? 1.0f : 0.0f); 
+            meshRenderer.SetPropertyBlock(propBlock);
+        }
     }
 
     public void Fire()
     {
-        // Trigger the event
-        OnInteract?.Invoke(this);
-        // Destroy the pickup object
-        //Destroy(gameObject);
+        Debug.Log("Interactable fired");
     }
-
-    public void SafeFire()
-    {
-        if (CheckIsInView())
-        {
-            Fire();
-        }
-    }
+    
 }

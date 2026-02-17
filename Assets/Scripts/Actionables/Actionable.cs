@@ -10,9 +10,7 @@ using System;
 */
 public interface Actionable
 {
-
-    public static event Action<MonoBehaviour> OnInteract;
     // This class is a marker
     void Fire();
-    void SafeFire();
+    void SetFocus(bool focused);
 }

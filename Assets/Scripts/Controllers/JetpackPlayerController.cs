@@ -56,6 +56,15 @@ public class JetpackPlayerController : MonoBehaviour
         Vector3 cameraUp = playerInput.camera.transform.up;
         Vector3 thrustDirection = (cameraForward * horizontalThrustDirection.y + cameraRight * horizontalThrustDirection.x + cameraUp * verticalThrust).normalized;
 
+        RaycastHit hit;
+        // Cast a sphere slightly ahead of the player. 
+        // '0.5f' (radius) and '0.6f' (distance)
+        if (Physics.SphereCast(transform.position, 0.5f, thrustDirection, out hit, 0.6f))
+        {
+            // Project the thrust vector onto the wall's surface so we slide instead of sticking
+            thrustDirection = Vector3.ProjectOnPlane(thrustDirection, hit.normal).normalized;
+        }
+
         rb.AddForce(thrustDirection * thrust, ForceMode.Acceleration);
     }
         

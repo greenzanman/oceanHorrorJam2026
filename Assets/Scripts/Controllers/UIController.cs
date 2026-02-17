@@ -1,84 +1,53 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem; // Required for InputValue
 
-/*
-    * The UIController is responsible for handling all UI input and events. It listens for input from the player and fires events that other UI elements can subscribe to.
-*/
 public class UIController : MonoBehaviour
 {
-    public static UIController Instance { get; private set; }
+    // static events that the UIPanelManager script can subscribe to
     public static Action onInteractInput;
     public static Action<Vector2> onMoveInput;
-    //public static Action onInventory;
     public static Action onMenu;
     public static Action onDescription;
-    public static Action<Pickup> onPickup;
-    [SerializeField] private UIPanelManager panelManager;
-    [SerializeField] private Carousel carousel;
-    public GameObject inventoryPanel;
-    private PlayerInput playerInput;
-    private InputAction inventoryAction;
-    private InputAction interactAction;
-
-    private InputAction menuAction;
     
-    private InputAction moveAction;
-
-    private bool isDescriptionOpen = false;
-
-    void Start()
-    {
-        if (inventoryPanel == null)
-        {
-            Debug.LogError("Inventory Panel is not assigned in the inspector.");
-        }
-
-        playerInput = GetComponent<PlayerInput>();
-        //inventoryAction = playerInput.actions["Inventory"];
-        interactAction = playerInput.actions["Interact"];
-        menuAction = playerInput.actions["Menu"];
-        moveAction = playerInput.actions["Move"];
-
-        //inventoryAction.performed += HandleInventory;
-        interactAction.performed += HandleInteractInput;
-        menuAction.performed += HandleMenu;
-        moveAction.performed += HandleMoveInput;
-    }   
-
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            HandleDescription();
-        }
-    }
-
-    // void HandleInventory(InputAction.CallbackContext context)
-    // {
-    //     onInventory?.Invoke();
-    // }
-
-    
-    void HandleInteractInput(InputAction.CallbackContext context)
+    void OnInteract()
     {
         onInteractInput?.Invoke();
     }
 
-    void HandleMenu(InputAction.CallbackContext context)
+    void OnMove(InputValue value)
     {
-        onMenu?.Invoke(); 
+        Vector2 moveInput = value.Get<Vector2>();
+        onMoveInput?.Invoke(moveInput);
     }
 
-    void HandleMoveInput(InputAction.CallbackContext context)
+    void OnMenu()
     {
-        onMoveInput?.Invoke(context.ReadValue<Vector2>());
+        onMenu?.Invoke();
     }
 
-    void HandleDescription()
+
+    void OnStroke()
     {
-        onDescription?.Invoke();
+        bool isInventoryOpen = UIPanelManager.Instance.IsCurrentPanel(PanelType.InventoryPanel);
+        bool isDescriptionOpen = UIPanelManager.Instance.IsCurrentPanel(PanelType.DescriptionPanel);
+        
+        if (isInventoryOpen || isDescriptionOpen)
+        {
+             UIPanelManager.Instance.ToggleInventory();
+        }
+        else
+        {
+            // HERE: must be gameplay input, which is handled by stroke controller (not here)
+        }
+    }
+
+    // put shit in here for debugging 
+    void Update()
+    {
+        // if(Input.GetKeyDown(KeyCode.E))
+        // {
+        //     onDescription?.Invoke();
+        // }
     }
 }
