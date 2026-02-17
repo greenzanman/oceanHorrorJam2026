@@ -5,13 +5,13 @@ using UnityEngine.InputSystem;
 
 // this manager should be on the player
 // - tracks all active ping spheres and sends their data to the shader each frame
+[RequireComponent(typeof(PlayerInput))]
 public class SonarManager : MonoBehaviour
 {
     public static SonarManager Instance;
 
     [Header("1. Object Links")]
     [SerializeField] private GameObject pingPrefab; 
-    [SerializeField] private PlayerInput playerInput;
 
     [Header("2. Scanner Gameplay")]
     public float scannerSpeed = 15f;
@@ -25,6 +25,16 @@ public class SonarManager : MonoBehaviour
     [Tooltip("Higher = Smaller Dots")] public float gridScale = 50.0f; 
     [Range(0.01f, 0.99f)] public float dotSize = 0.5f;
 
+    [Header("4. Energy System")]
+    public float maxEnergy = 100f;
+    public float passiveDrainRate = 2f; // How fast it drops outside
+    public float lowEnergyRegenRate = 10f; // How fast it regens up to 33%
+    public float safeZoneRechargeRate = 50f; // How fast it refills inside elevator
+    
+    [Header("Debug View")]
+    public float currentEnergy;
+    public bool inSafeZone = true; // Default to true (start in elevator)
+
     // --- INTERNAL DATA ---
     private List<SonarPingSphere> activeSpheres = new List<SonarPingSphere>();
     private float[] _radii = new float[16];
@@ -33,6 +43,7 @@ public class SonarManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        currentEnergy = maxEnergy;
     }
 
     void Update()
@@ -45,6 +56,9 @@ public class SonarManager : MonoBehaviour
 
         // 2. Update Visual Data (Colors/Grid)
         UpdateVisualData();
+
+        // 3. Update Energy System
+        HandleEnergy();
     }
 
     void UpdateWaveData()
@@ -88,6 +102,36 @@ public class SonarManager : MonoBehaviour
         Shader.SetGlobalFloat("_SonarDotSize", dotSize);
     }
 
+    void HandleEnergy()
+    {
+        float oneThird = maxEnergy / 3f;
+
+        if (inSafeZone)
+        {
+            // RAPID RECHARGE IN SAFE ZONE
+            if (currentEnergy < maxEnergy)
+            {
+                currentEnergy += safeZoneRechargeRate * Time.deltaTime;
+                currentEnergy = Mathf.Min(currentEnergy, maxEnergy);
+            }
+        }
+        else
+        {
+            // OUTSIDE SAFE ZONE
+            if (currentEnergy > oneThird)
+            {
+                // Decay down to 1/3
+                currentEnergy -= passiveDrainRate * Time.deltaTime;
+            }
+            else
+            {
+                // Regenerate up to 1/3
+                currentEnergy += lowEnergyRegenRate * Time.deltaTime;
+                currentEnergy = Mathf.Min(currentEnergy, oneThird);
+            }
+        }
+    }
+
     // --- REGISTRATION ---
     public void RegisterPing(SonarPingSphere ping)
     {
@@ -103,7 +147,29 @@ public class SonarManager : MonoBehaviour
     // --- SPAWNING ---
     public void OnFire()
     {
-        StartCoroutine(PingBurstRoutine());
+        float pingCost = maxEnergy / 3f;
+
+        // Can fire if in Safe Zone OR if we have enough energy
+        if (inSafeZone || currentEnergy >= pingCost)
+        {
+            // Only deduct energy if OUTSIDE safe zone
+            if (!inSafeZone)
+            {
+                currentEnergy -= pingCost;
+            }
+
+            StartCoroutine(PingBurstRoutine());
+        }
+        else
+        {
+            Debug.Log("Not enough energy to ping!");
+            // TODO: sfx add errory sound
+        }
+    }
+
+    public void SetSafeZone(bool isSafe)
+    {
+        inSafeZone = isSafe;
     }
 
     private IEnumerator PingBurstRoutine()
