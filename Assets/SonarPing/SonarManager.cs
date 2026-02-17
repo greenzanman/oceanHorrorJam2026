@@ -27,9 +27,16 @@ public class SonarManager : MonoBehaviour
 
     [Header("4. Energy System")]
     public float maxEnergy = 100f;
-    public float passiveDrainRate = 2f; // How fast it drops outside
-    public float lowEnergyRegenRate = 10f; // How fast it regens up to 33%
-    public float safeZoneRechargeRate = 50f; // How fast it refills inside elevator
+    public float safeZoneRechargeRate = 50f; // Rapid fill in elevator
+    
+    [Header("Outside Regeneration Curve")]
+    [Tooltip("Maximum regen speed when energy is 0.")]
+    public float maxRegenRate = 20f; 
+    [Tooltip("Minimum regen speed when energy is 100 (Full).")]
+    public float minRegenRate = 2f;
+
+    [Tooltip("X axis = Current Energy %. Y axis = 1 is max energy and 0 is min energy.")]
+    public AnimationCurve energyRegenCurve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
     
     [Header("Debug View")]
     public float currentEnergy;
@@ -112,24 +119,39 @@ public class SonarManager : MonoBehaviour
             if (currentEnergy < maxEnergy)
             {
                 currentEnergy += safeZoneRechargeRate * Time.deltaTime;
-                currentEnergy = Mathf.Min(currentEnergy, maxEnergy);
             }
         }
         else
         {
-            // OUTSIDE SAFE ZONE
-            if (currentEnergy > oneThird)
-            {
-                // Decay down to 1/3
-                currentEnergy -= passiveDrainRate * Time.deltaTime;
-            }
-            else
-            {
-                // Regenerate up to 1/3
-                currentEnergy += lowEnergyRegenRate * Time.deltaTime;
-                currentEnergy = Mathf.Min(currentEnergy, oneThird);
-            }
+            // 1. Calculate how full we are (0.0 to 1.0)
+            float energyPercent = currentEnergy / maxEnergy;
+
+            // 2. Evaluate Curve
+            float curveValue = energyRegenCurve.Evaluate(energyPercent);
+
+            // 3. Apply Rate
+            float currentRate = Mathf.Lerp(minRegenRate, maxRegenRate, curveValue);
+            
+            currentEnergy += currentRate * Time.deltaTime;
         }
+
+        // Clamp energy between 0 and Max
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+    }
+
+    // Tries to consume energy. Returns true if successful, false if not enough.
+    public bool TryConsumeEnergy(float amount)
+    {
+        // If inside safe zone, actions are free!
+        if (inSafeZone) return true;
+
+        if (currentEnergy >= amount)
+        {
+            currentEnergy -= amount;
+            return true;
+        }
+        
+        return false;
     }
 
     // --- REGISTRATION ---

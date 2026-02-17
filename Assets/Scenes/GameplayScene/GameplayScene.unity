@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 47012390}
   m_Layer: 3
   m_Name: PlayerController
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -360,6 +360,8 @@ MonoBehaviour:
   staleFactor: 0
   recoveryRate: 0.7
   minStaleThreshold: 0
+  maxEnergyCost: 25
+  minEnergyCost: 2
 --- !u!114 &47012388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,7 +375,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pingPrefab: {fileID: 2476866646674544456, guid: e845cfb1a6807d7498498e9778573cf8, type: 3}
-  playerInput: {fileID: 47012381}
   scannerSpeed: 15
   maxRange: 120
   pingsPerFire: 3
@@ -382,6 +383,45 @@ MonoBehaviour:
   fadeStrength: 4.13
   gridScale: 50
   dotSize: 0.5
+  maxEnergy: 100
+  safeZoneRechargeRate: 50
+  maxRegenRate: 20
+  minRegenRate: 5
+  energyRegenCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.73745
+      value: 0.24712098
+      inSlope: -1.8919709
+      outSlope: -1.8919709
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.12430984
+    - serializedVersion: 3
+      time: 0.9999695
+      value: 0.22808838
+      inSlope: -0.017672447
+      outSlope: -0.017672447
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.3720887
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  currentEnergy: 0
+  inSafeZone: 1
 --- !u!114 &47012389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,7 +1434,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1784402598712303216, guid: df37d103d8dd51c43bd872f2be1e9e8b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5875536537258309711, guid: df37d103d8dd51c43bd872f2be1e9e8b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1896,6 +1936,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3316565090698310796, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4202399052315374401, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6131420495032871428, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_Pivot.x
       value: 0
