@@ -1,53 +1,93 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem; // Required for InputValue
+using UnityEngine.InputSystem;
 
 public class UIController : MonoBehaviour
 {
-    // static events that the UIPanelManager script can subscribe to
-    public static Action onInteractInput;
-    public static Action<Vector2> onMoveInput;
-    public static Action onMenu;
-    public static Action onDescription;
+    public static UIController Instance { get; private set; }
+
+    // Events for the Carousel to listen to
+    public static Action OnNextItem; 
+    public static Action OnPrevItem;
     
-    void OnInteract()
-    {
-        onInteractInput?.Invoke();
-    }
+    // Existing events
+    public static Action onInteractInput;
+    public static Action onMenu;
 
-    void OnMove(InputValue value)
-    {
-        Vector2 moveInput = value.Get<Vector2>();
-        onMoveInput?.Invoke(moveInput);
-    }
+    private PlayerInput playerInput;
+    private InputAction strokeAction; // Left Trigger
+    private InputAction fireAction;   // Right Trigger
+    private InputAction menuAction;   // Escape/Start
 
-    void OnMenu()
+    void Awake()
     {
-        onMenu?.Invoke();
-    }
-
-
-    void OnStroke()
-    {
-        bool isInventoryOpen = UIPanelManager.Instance.IsCurrentPanel(PanelType.InventoryPanel);
-        bool isDescriptionOpen = UIPanelManager.Instance.IsCurrentPanel(PanelType.DescriptionPanel);
+        Instance = this;
+        playerInput = GetComponent<PlayerInput>();
         
-        if (isInventoryOpen || isDescriptionOpen)
+        // precise names depend on your Input Action Asset
+        strokeAction = playerInput.actions["Stroke"]; 
+        fireAction = playerInput.actions["Fire"];
+        menuAction = playerInput.actions["Menu"];
+    }
+
+    void OnEnable()
+    {
+        strokeAction.performed += HandleStroke;
+        fireAction.performed += HandleFire;
+        menuAction.performed += HandleMenu;
+    }
+
+    void OnDisable()
+    {
+        strokeAction.performed -= HandleStroke;
+        fireAction.performed -= HandleFire;
+        menuAction.performed -= HandleMenu;
+    }
+
+    private void HandleStroke(InputAction.CallbackContext context)
+    {
+        if (IsInventoryOpen())
+        {
+            // NAVIGATION: Previous Item
+            OnPrevItem?.Invoke();
+        }
+        else
+        {
+            // GAMEPLAY: Normal Stroke Logic handled by other scripts
+            // (If other scripts listen to .performed, they will still fire unless you disable them)
+        }
+    }
+
+    private void HandleFire(InputAction.CallbackContext context)
+    {
+        if (IsInventoryOpen())
+        {
+            // NAVIGATION: Next Item
+            OnNextItem?.Invoke();
+        }
+        else
+        {
+            // GAMEPLAY: Normal Fire Logic
+        }
+    }
+
+    private void HandleMenu(InputAction.CallbackContext context)
+    {
+        // Always toggle menu/inventory on Escape/Start
+        // If inventory is open, this will close it (handled by UIPanelManager usually)
+        if (IsInventoryOpen())
         {
              UIPanelManager.Instance.ToggleInventory();
         }
         else
         {
-            // HERE: must be gameplay input, which is handled by stroke controller (not here)
+             UIPanelManager.Instance.ToggleMenu();
         }
     }
 
-    // put shit in here for debugging 
-    void Update()
+    // Helper to check state
+    private bool IsInventoryOpen()
     {
-        // if(Input.GetKeyDown(KeyCode.E))
-        // {
-        //     onDescription?.Invoke();
-        // }
+        return UIPanelManager.Instance.IsCurrentPanel(PanelType.InventoryPanel);
     }
 }

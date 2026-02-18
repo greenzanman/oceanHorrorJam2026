@@ -32,9 +32,16 @@ public class Pickup : MonoBehaviour, Actionable
 
     public void Fire()
     {
-        // Trigger the event for PickUpUI
+        Transform originalParent = transform.parent;
+        
         OnInteract?.Invoke(this);
-        gameObject.SetActive(false);
+
+        // Deactivate only if parent unchanged (not picked up)
+        // Stay active if picked up by Carousel (parent changed)
+        if (transform.parent == originalParent)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void SetFocus(bool focused)

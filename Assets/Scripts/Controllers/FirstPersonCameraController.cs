@@ -38,6 +38,9 @@ public class FirstPersonCameraController : MonoBehaviour
     // run camera and player rotation after game logic (Update) but before rendering
     void LateUpdate()
     {
+        // don't rotate if the game is paused
+        if (Time.timeScale == 0) return;
+
         // Apply smoothing to mouse input using SmoothDamp
         smoothMouseX = Mathf.SmoothDamp(smoothMouseX, mouseX, ref smoothMouseXVelocity, smoothTime);
         smoothMouseY = Mathf.SmoothDamp(smoothMouseY, mouseY, ref smoothMouseYVelocity, smoothTime);

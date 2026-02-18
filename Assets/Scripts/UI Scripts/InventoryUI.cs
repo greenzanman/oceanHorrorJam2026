@@ -1,63 +1,68 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem; // Needed for detecting Gamepad
 
 public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private InventoryModel model;
-    [SerializeField] private GameObject displayNameText = null;
-    [SerializeField] private GameObject displayDescriptionText = null;
-    private TextMeshProUGUI tmpName;
-    private TextMeshProUGUI tmpDescription;
-    // Start is called before the first frame update
+    
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI controlsHintText; // <--- Drag your hint text here
+
+    private PlayerInput playerInput; // Reference to player input
+
+    void Awake()
+    {
+        // Find PlayerInput (Assuming it's on the player character)
+        playerInput = FindObjectOfType<PlayerInput>();
+    }
+
     void OnEnable()
     {
         InventoryModel.Updated += RefreshUI;
-        //Carousel.onItemChanged += HandleOnItemChanged;
-        tmpName = displayNameText.GetComponent<TextMeshProUGUI>();
-        tmpDescription = displayDescriptionText.GetComponent<TextMeshProUGUI>();
-        if (tmpName == null)
+        
+        // Listen for control scheme changes (Keyboard -> Gamepad switching)
+        if (playerInput != null)
         {
-            Debug.LogError("TextMeshProUGUI component not found on displayNameText GameObject.");
-        }
-
-        if (tmpDescription == null)
-        {
-            Debug.LogError("TextMeshProUGUI component not found on displayDescriptionText GameObject.");
-        }
-
-        if(model == null)
-        {
-            Debug.LogError("Model not provided.");
+            playerInput.onControlsChanged += UpdateControlHints;
+            UpdateControlHints(playerInput); // Set initial text
         }
 
         RefreshUI();
     }
 
+    void OnDisable()
+    {
+        InventoryModel.Updated -= RefreshUI;
+        if (playerInput != null)
+        {
+            playerInput.onControlsChanged -= UpdateControlHints;
+        }
+    }
+
+    // Automatically called when you plug in a controller or touch the keyboard
+    void UpdateControlHints(PlayerInput input)
+    {
+        if (controlsHintText == null) return;
+
+        if (input.currentControlScheme == "Gamepad")
+        {
+            // Gamepad Prompts
+            controlsHintText.text = "LT: Prev  |  RT: Next  |  Start: Close";
+        }
+        else
+        {
+            // Keyboard Prompts
+            controlsHintText.text = "Space: Prev  |  LClick: Next  |  F: Close";
+        }
+    }
+
     void RefreshUI()
     {
-        Debug.Log("Refreshing UI");
-        UpdateDisplayName();
-        UpdateDescription();
-    }
-
-    void UpdateDisplayName()
-    {
-        // Debug.Log(tmpName);
-        if (tmpName != null)
-        {
-            tmpName.text = model.GetName();
-        }
-    }
-
-    void UpdateDescription()
-    {
-        // Debug.Log(tmpDescription);
-        if (tmpDescription != null)
-        {
-            tmpDescription.text = model.GetDescription();
-        }
+        if (model == null) return;
+        if (nameText) nameText.text = model.GetName();
+        if (descriptionText) descriptionText.text = model.GetDescription();
     }
 }
