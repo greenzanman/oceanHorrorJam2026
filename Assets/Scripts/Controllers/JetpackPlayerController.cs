@@ -59,7 +59,7 @@ public class JetpackPlayerController : MonoBehaviour
         RaycastHit hit;
         // Cast a sphere slightly ahead of the player. 
         // '0.5f' (radius) and '0.6f' (distance)
-        if (Physics.SphereCast(transform.position, 0.5f, thrustDirection, out hit, 0.6f))
+        if (Physics.SphereCast(transform.position, 0.375f, thrustDirection, out hit, 0.45f))
         {
             // Project the thrust vector onto the wall's surface so we slide instead of sticking
             thrustDirection = Vector3.ProjectOnPlane(thrustDirection, hit.normal).normalized;

@@ -126,10 +126,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a83c44024da3f74988b04cb758b7424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToShow: 0
-  interactionPromptCanvas: {fileID: 0}
+  panelToShow: 1
+  interactionPromptCanvas: {fileID: 644891147005895826}
   meshRenderer: {fileID: 563496221721169275}
-  interactionVerb: Access
+  interactionVerb: ACCESS TERMINAL
 --- !u!1 &2926855457980968345
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +156,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2926855457980968345}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.0612376, y: -0.80925995, z: -1.3893899}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -308,7 +308,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3825096259028127535, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_Name
-      value: UI Interact Prompt
+      value: Interaction Prompt Tip
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359118177494113731, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+      propertyPath: m_Name
+      value: Text
       objectReference: {fileID: 0}
     - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_Pivot.x
@@ -395,6 +399,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+--- !u!1 &644891147005895826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3825096259028127535, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+  m_PrefabInstance: {fileID: 4460364480267201469}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7683787629258042459 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}

@@ -3,6 +3,7 @@ using UnityEngine.Events;
 
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerInput))]
 // Testing some random things attached to player input
 public class PlayerTester : MonoBehaviour
 {

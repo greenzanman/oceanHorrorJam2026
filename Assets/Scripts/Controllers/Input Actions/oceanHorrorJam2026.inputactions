@@ -86,6 +86,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Debug1",
+                    "type": "Button",
+                    "id": "e3ed1201-3d85-409a-ac0d-80358a9402f4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -449,6 +458,17 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7ba8c3c-090f-41b8-9991-b8578952c1dc",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Debug1",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
