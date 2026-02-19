@@ -17,7 +17,12 @@ public class InteractionDetector : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, maxReach, interactableLayer))
         {
-            if (hit.collider.TryGetComponent(out Actionable actionable))
+            // 1. Look for the script on the object hit OR any of its parents
+            Actionable actionable = hit.collider.GetComponentInParent<Actionable>();
+            // Debug.Log("Ray hit: " + hit.collider.gameObject.name + " which has script: " + actionable);
+
+            // 2. If we found one, handle the focus logic
+            if (actionable != null)
             {
                 if (currentTarget != actionable)
                 {

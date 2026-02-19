@@ -1126,7 +1126,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 14937
+  m_VersionIndex: 15081
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1179,7 +1179,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  - {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2377,7 +2377,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 7983
+  m_VersionIndex: 8127
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2434,7 +2434,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  - {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4168,7 +4168,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 9904
+  m_VersionIndex: 10052
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4225,7 +4225,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  - {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4287,7 +4287,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 554211665377269947, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_VersionIndex
-      value: 6344
+      value: 6369
       objectReference: {fileID: 0}
     - target: {fileID: 1669288120567642469, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_LocalScale.x
@@ -4345,6 +4345,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rock pillar (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4435672679411486342, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4365,7 +4369,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 554211665377269947, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_VersionIndex
-      value: 6344
+      value: 6393
       objectReference: {fileID: 0}
     - target: {fileID: 1669288120567642469, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_LocalScale.x
@@ -4423,6 +4427,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rock pillar
       objectReference: {fileID: 0}
+    - target: {fileID: 4435672679411486342, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4443,7 +4451,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 554211665377269947, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_VersionIndex
-      value: 6344
+      value: 6482
       objectReference: {fileID: 0}
     - target: {fileID: 1669288120567642469, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4489,6 +4497,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: silly pillar
       objectReference: {fileID: 0}
+    - target: {fileID: 4435672679411486342, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4509,7 +4521,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 554211665377269947, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_VersionIndex
-      value: 6344
+      value: 6372
       objectReference: {fileID: 0}
     - target: {fileID: 1669288120567642469, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
       propertyPath: m_LocalScale.x
@@ -4563,6 +4575,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rock pillar (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4435672679411486342, guid: 31aeab6619c1df1448cf82ebfbba34ab, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f13c20955753d824c81e8640e187aeb0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

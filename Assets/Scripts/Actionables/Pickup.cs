@@ -82,4 +82,18 @@ public class Pickup : MonoBehaviour, Actionable
         return longDescription;
     }
     
+
+    public string GetInteractPrompt()
+    {
+        // Fetches the current key/button bound to "Interact"
+        string key = GetBinding("Interact");
+        return $"Press [{key}] to pick up {gameObject.name}";
+    }
+
+    // Helper method for dynamic keys
+    private string GetBinding(string actionName)
+    {
+        var playerInput = FindObjectOfType<UnityEngine.InputSystem.PlayerInput>();
+        return playerInput.actions[actionName].GetBindingDisplayString();
+    }
 }

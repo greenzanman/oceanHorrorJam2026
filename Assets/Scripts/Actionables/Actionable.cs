@@ -13,4 +13,5 @@ public interface Actionable
     // This class is a marker
     void Fire();
     void SetFocus(bool focused);
+    string GetInteractPrompt();
 }

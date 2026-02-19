@@ -93,4 +93,12 @@ public class UIInteractable : MonoBehaviour, Actionable
         }
             
     }
+
+    public string GetInteractPrompt()
+    {
+        var playerInput = PlayerInput.all.Count > 0 ? PlayerInput.all[0] : null;
+        string keyName = playerInput != null ? playerInput.actions["Interact"].GetBindingDisplayString() : "E";
+        
+        return $"{interactionVerb} [{keyName}]";
+    }
 }

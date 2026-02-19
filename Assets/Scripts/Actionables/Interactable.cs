@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class Interactable : MonoBehaviour, Actionable
 {
@@ -27,6 +28,18 @@ public class Interactable : MonoBehaviour, Actionable
     public void Fire()
     {
         Debug.Log("Interactable fired");
+    }
+
+    public string GetInteractPrompt()
+    {
+        string key = GetBinding("Interact");
+        return $"Press [{key}] to Interact";
+    }
+
+    private string GetBinding(string actionName)
+    {
+        var playerInput = FindObjectOfType<UnityEngine.InputSystem.PlayerInput>();
+        return playerInput.actions[actionName].GetBindingDisplayString();
     }
     
 }

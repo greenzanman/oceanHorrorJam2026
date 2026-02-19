@@ -9,7 +9,7 @@ public class Inventory : MonoBehaviour
 
     void Awake()
     {
-        Pickup.OnInteract += Handleickup;
+        Pickup.OnInteract += HandlePickup;
     }
 
     public void AddItem(GameObject item)
@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour
         return items;
     }
 
-    void Handleickup(Pickup pickup)
+    void HandlePickup(Pickup pickup)
     {
         GameObject item = pickup.gameObject;
         AddItem(item);
