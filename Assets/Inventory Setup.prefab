@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 4709037821401417817}
   - component: {fileID: 5545319465446328298}
   - component: {fileID: 2698240818974145429}
+  - component: {fileID: -1582625364319545329}
   m_Layer: 0
   m_Name: Pause Camera
   m_TagString: Untagged
@@ -170,6 +171,20 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &-1582625364319545329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5411628184570152036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &7515726762109170939
 GameObject:
   m_ObjectHideFlags: 0

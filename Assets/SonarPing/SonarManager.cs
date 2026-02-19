@@ -42,6 +42,9 @@ public class SonarManager : MonoBehaviour
     public float currentEnergy;
     public bool inSafeZone = true; // Default to true (start in elevator)
 
+    [Header("Audio")]
+    [SerializeField] private AudioManager audioManager;
+
     // --- INTERNAL DATA ---
     private List<SonarPingSphere> activeSpheres = new List<SonarPingSphere>();
     private float[] _radii = new float[16];
@@ -196,6 +199,8 @@ public class SonarManager : MonoBehaviour
 
     private IEnumerator PingBurstRoutine()
     {
+        audioManager.PlaySonarPing();
+        
         for (int i = 0; i < pingsPerFire; i++)
         {
             SpawnPing();

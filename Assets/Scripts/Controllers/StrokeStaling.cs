@@ -30,6 +30,9 @@ public class StrokeStaling : MonoBehaviour
     private PlayerInput playerInput;
     private float currentStaleMultiplier = 1f;
 
+    private bool _isStroking = false;
+    public bool IsStroking => _isStroking;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -67,6 +70,8 @@ public class StrokeStaling : MonoBehaviour
             return; 
         }
 
+        _isStroking = true;
+
         // 4. Apply Physics (Force still gets weaker when stale, that remains the same)
         float modifiedForce = horizontalStrokeForce * currentStaleMultiplier;
         
@@ -97,5 +102,7 @@ public class StrokeStaling : MonoBehaviour
 
             yield return new WaitForFixedUpdate(); // <--- WAIT FOR PHYSICS STEP
         }
+        
+        _isStroking = false;
     }
 }

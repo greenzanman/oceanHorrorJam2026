@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 198872230360101001}
   - component: {fileID: 8179034396184017557}
   - component: {fileID: 4769896092522076105}
+  - component: {fileID: 2676506871653467188}
   m_Layer: 0
   m_Name: Elevator
   m_TagString: Untagged
@@ -171,6 +172,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2676506871653467188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219051490133297414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 57562226
+      Data2: 1128505619
+      Data3: 2120085925
+      Data4: -180410184
+    Path: event:/AMBIENCE elevator
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
 --- !u!1 &2949177321461740493
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,6 +603,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 198872230360101001}
     m_Modifications:
+    - target: {fileID: 2695433084925388063, guid: aa8b183f0184856418441a5fd0513ef4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237999284632983281, guid: aa8b183f0184856418441a5fd0513ef4, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6134143244052089207, guid: aa8b183f0184856418441a5fd0513ef4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.4976
@@ -633,6 +673,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 198872230360101001}
     m_Modifications:
+    - target: {fileID: 2076454800791743662, guid: 00c2d73d6d4d74249ad9c61b0dc1564b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2926855457980968345, guid: 00c2d73d6d4d74249ad9c61b0dc1564b, type: 3}
       propertyPath: m_Name
       value: Terminal
