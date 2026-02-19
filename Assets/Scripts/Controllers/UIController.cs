@@ -18,7 +18,6 @@ public class UIController : MonoBehaviour
     public static Action<Pickup> onPickup;
     [SerializeField] private UIPanelManager panelManager;
     [SerializeField] private Carousel carousel;
-    public GameObject inventoryPanel;
     private PlayerInput playerInput;
     private InputAction inventoryAction;
     private InputAction interactAction;
@@ -31,11 +30,6 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
-        if (inventoryPanel == null)
-        {
-            Debug.LogError("Inventory Panel is not assigned in the inspector.");
-        }
-
         playerInput = GetComponent<PlayerInput>();
         //inventoryAction = playerInput.actions["Inventory"];
         interactAction = playerInput.actions["Interact"];
@@ -46,6 +40,9 @@ public class UIController : MonoBehaviour
         interactAction.performed += HandleInteractInput;
         menuAction.performed += HandleMenu;
         moveAction.performed += HandleMoveInput;
+
+        interactAction.started += ctx => SetInteractState(true);
+        interactAction.canceled += ctx => SetInteractState(false);
     }   
 
     void Update()
@@ -81,4 +78,11 @@ public class UIController : MonoBehaviour
     {
         onDescription?.Invoke();
     }
+
+    public static Action<bool> OnInteractHeld;
+    void SetInteractState(bool isHeld)
+    {
+        OnInteractHeld?.Invoke(isHeld);
+    }
+
 }

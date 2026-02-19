@@ -228,4 +228,16 @@ public class Carousel : MonoBehaviour
             items[i].localPosition = new Vector3(i * spacing, 0, 0);
         }
     }
+    
+    public bool Contains(string pickupName)
+    {
+        foreach (Transform item in items)
+        {
+            if (item.name.StartsWith(pickupName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

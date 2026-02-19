@@ -50,9 +50,10 @@ public class CameraTagger : MonoBehaviour
         // Clear previous object's in-view status
         if (objectInView != null && objectInView != obj)
         {
-            Pickup previousPickup = objectInView.GetComponent<Pickup>();
-            previousPickup.SetInView(false);
-            RemoveOutline(previousPickup.gameObject);
+            Actionable previousActionable = objectInView.GetComponent<Actionable>();
+            GameObject previousGameObject = previousActionable != null ? objectInView : null;
+            previousActionable.SetInView(false);
+            RemoveOutline(previousGameObject);
         }
         // Set new object in view
         objectInView = obj;
