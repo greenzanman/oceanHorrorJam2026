@@ -96,7 +96,6 @@ public class Carousel : MonoBehaviour
         {
             elapsed += Time.unscaledDeltaTime; // Use unscaled for pause menu
             float t = Mathf.Clamp01(elapsed / moveDuration);
-
             for (int i = 0; i < items.Count; i++)
             {
                 items[i].localPosition = Vector3.Lerp(startPositions[i], endPositions[i], t);
