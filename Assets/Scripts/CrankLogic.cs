@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CrankLogic : MonoBehaviour
 {
-    [SerializeField] private Carousel inventory; 
+    [SerializeField] private Inventory inventory; 
     [SerializeField] private float rotationSpeed = 1f; // progress per second
     [SerializeField] private float maxCrankRotation = 360f;
     [SerializeField] private float maxDoorHeight = 2f;
@@ -49,10 +49,14 @@ public class CrankLogic : MonoBehaviour
 
     void HandleInteract(Interactable interactable)
     {
-        if (!isCrankVisible && interactable.gameObject == crank && inventory.Contains("Crank"))
+        Debug.Log("Inventory: " + inventory);
+        GameObject obj =  inventory.Contains("Crank", true);
+        Debug.Log("Checking for crank in inventory: " + (obj != null ? obj.name : "none"));
+        if (!isCrankVisible && interactable.gameObject == crank && obj != null)
         {
             isCrankVisible = true;
             crank.GetComponent<MeshRenderer>().enabled = true;
+            inventory.RemoveItem(obj);
         }
     }
 
