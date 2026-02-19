@@ -78,19 +78,16 @@ public class Carousel : MonoBehaviour
     void HandleMoveInput(Vector2 input)
     {
         if (isMoving) return;
-        if(items.Count <= 1) return;
-        // Do nothing on move input, just prevent further movement handling
-        Debug.Log("Received move input: " + input);
+        if (items.Count <= 1) return;
+
         Vector2 moveInput = input.normalized;
         if (moveInput.x > 0.5f)
         {
-            StartCoroutine(MoveCarousel(-1));
-            currentItem = (currentItem + 1) % items.Count;
+            StartCoroutine(MoveCarousel(-1, (currentItem + 1) % items.Count));
         }
         else if (moveInput.x < -0.5f)
         {
-            StartCoroutine(MoveCarousel(1));
-            currentItem = (currentItem - 1 + items.Count) % items.Count;
+            StartCoroutine(MoveCarousel(1, (currentItem - 1 + items.Count) % items.Count));
         }
     }
 
@@ -121,10 +118,9 @@ public class Carousel : MonoBehaviour
         }
     }
 
-    IEnumerator MoveCarousel(int direction) // direction = -1 (right) / 1 (left)
+    IEnumerator MoveCarousel(int direction, int nextItem)
     {
-        if (items.Count == 0)
-            yield break;
+        if (items.Count == 0) yield break;
         isMoving = true;
 
         Vector3[] startPositions = new Vector3[items.Count];
@@ -136,28 +132,23 @@ public class Carousel : MonoBehaviour
             endPositions[i] = startPositions[i] + new Vector3(direction * spacing, 0, 0);
         }
 
-        // Tween over time
         float elapsed = 0f;
         while (elapsed < moveDuration)
         {
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / moveDuration);
-
             for (int i = 0; i < items.Count; i++)
             {
                 items[i].localPosition = Vector3.Lerp(startPositions[i], endPositions[i], t);
             }
-
             yield return null;
         }
 
-        // Apply final positions exactly
         for (int i = 0; i < items.Count; i++)
         {
             items[i].localPosition = endPositions[i];
         }
 
-        // Wrap-around **after tweening**
         for (int i = 0; i < items.Count; i++)
         {
             if (items[i].localPosition.x > spacing * (items.Count / 2))
@@ -177,19 +168,20 @@ public class Carousel : MonoBehaviour
                 );
             }
         }
+
+        currentItem = GetCenteredItemIndex();
+
         if (items.Count > 0)
         {
             Pickup pickup = items[currentItem].GetComponent<Pickup>();
             if (pickup != null)
             {
-                string shortDescription = pickup.GetShortDescription();
-                string longDescription = pickup.GetLongDescription();
-                string name = items[currentItem].name;
-                onItemChanged?.Invoke(name, shortDescription, longDescription);
+                onItemChanged?.Invoke(items[currentItem].name, pickup.GetShortDescription(), pickup.GetLongDescription());
             }
         }
 
         isMoving = false;
+
         while (pendingPickups.Count > 0)
         {
             AddPickupNow(pendingPickups.Dequeue());
@@ -213,12 +205,13 @@ public class Carousel : MonoBehaviour
         t.SetParent(transform);
         items.Add(t);
 
-        RebuildLayout();
-        currentItem = items.Count - 1;
+       
+        currentItem = GetCenteredItemIndex(); // Move to the newly added item
         string shortDescription = pickup.GetShortDescription();
         string longDescription = pickup.GetLongDescription();
         string name = items[currentItem].name;
         onItemChanged?.Invoke(name, shortDescription, longDescription);
+        RebuildLayout();
     }
 
     void RebuildLayout()
@@ -239,5 +232,21 @@ public class Carousel : MonoBehaviour
             }
         }
         return false;
+    }
+
+    int GetCenteredItemIndex()
+    {
+        int closest = 0;
+        float minDist = float.MaxValue;
+        for (int i = 0; i < items.Count; i++)
+        {
+            float dist = Mathf.Abs(items[i].localPosition.x);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = i;
+            }
+        }
+        return closest;
     }
 }

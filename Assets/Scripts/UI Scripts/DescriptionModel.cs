@@ -19,6 +19,7 @@ public class DescriptionModel : MonoBehaviour
     {
         UpdateDisplayName(newName);
         UpdateDescription(longDescription);
+        Debug.Log("DescriptionModel updated: " + newName);
         Updated?.Invoke();
     }
 
