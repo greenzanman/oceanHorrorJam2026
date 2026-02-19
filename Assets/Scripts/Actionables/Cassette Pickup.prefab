@@ -122,8 +122,14 @@ MonoBehaviour:
   interactionPrompt: {fileID: 2204687500874447306}
   showBtnPrompt: 1
   meshRenderer: {fileID: 3827480010592557744}
-  shortDescription: Put your description here.
-  longDescription: Put your description here.
+  shortDescription: Still haven't found any signs of him. Not helping that our maps
+    keep sending me in loops.   Saw some creatures today. From the glimpses I caught,
+    they don't seem like anything we have in our records, so I've been wary about
+    getting too close.  Perhaps a new species?   [picture attached, press SPACE to
+    view]  That said, it's oddly comforting, knowing that I'm not alone down here. 
+    That's the daily update.  Let me know if y'all find any signs of him in the vods. 
+    Yours truly, Corvin
+  longDescription: 
 --- !u!1001 &3138418854272792293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138,7 +144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3825096259028127535, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_Pivot.x
@@ -171,6 +177,18 @@ PrefabInstance:
     - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_SizeDelta.y
       value: 235
+      objectReference: {fileID: 0}
+    - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0005
+      objectReference: {fileID: 0}
+    - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0005
+      objectReference: {fileID: 0}
+    - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0005
       objectReference: {fileID: 0}
     - target: {fileID: 6288197157936678886, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_LocalPosition.x

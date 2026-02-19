@@ -58,7 +58,7 @@ public class Pickup : MonoBehaviour, Actionable
                 {
                     // Finds the binding for "Interact" and turns it into a string like "E" or "A"
                     var action = PlayerInput.all[0].actions["Interact"];
-                    txt.text = $"Press [{action.GetBindingDisplayString()}] to Interact";
+                    txt.text = $"PICKUP [{action.GetBindingDisplayString()}]";
                 }
             }
         }

@@ -263,6 +263,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15d6568ef62e3514db507e273ed776a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &456042525 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1197065296052776234, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+  m_PrefabInstance: {fileID: 1467435414}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &561220696
 Mesh:
   m_ObjectHideFlags: 0
@@ -1309,6 +1314,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4474639684618415107, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: panelEntries.Array.data[2].panelObj
+      value: 
+      objectReference: {fileID: 456042525}
     - target: {fileID: 6131420495032871428, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_Pivot.x
       value: 0
