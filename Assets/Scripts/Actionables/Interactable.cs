@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using TMPro;
+using UnityEngine.InputSystem;
 
 public class Interactable : MonoBehaviour, Actionable
 {
