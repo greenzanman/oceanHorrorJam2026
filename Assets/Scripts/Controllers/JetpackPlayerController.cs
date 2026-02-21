@@ -51,10 +51,10 @@ public class JetpackPlayerController : MonoBehaviour
         }
         
 
-        Vector3 cameraForward = playerInput.camera.transform.forward;
-        Vector3 cameraRight = playerInput.camera.transform.right;
-        Vector3 cameraUp = playerInput.camera.transform.up;
-        Vector3 thrustDirection = (cameraForward * horizontalThrustDirection.y + cameraRight * horizontalThrustDirection.x + cameraUp * verticalThrust).normalized;
+        Vector3 playerForward = transform.forward;
+        Vector3 playerRight = transform.right;
+        Vector3 playerUp = transform.up;
+        Vector3 thrustDirection = (playerForward * horizontalThrustDirection.y + playerRight * horizontalThrustDirection.x + playerUp * verticalThrust).normalized;
 
         RaycastHit hit;
         // Cast a sphere slightly ahead of the player. 

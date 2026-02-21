@@ -310,6 +310,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interaction Prompt Tip
       objectReference: {fileID: 0}
+    - target: {fileID: 4858326510166564455, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5359118177494113731, guid: a5dfefa1929d4ef449a0ba37ac59791c, type: 3}
       propertyPath: m_Name
       value: Text

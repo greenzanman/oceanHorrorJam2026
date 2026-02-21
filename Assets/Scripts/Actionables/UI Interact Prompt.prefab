@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5087557128473372648}
   - component: {fileID: 4858326510166564455}
   - component: {fileID: 1764617651422073072}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: UI Interact Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1764617651422073072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 9158848044316128768}
   - component: {fileID: 1487364024879672258}
   - component: {fileID: 554105910396826560}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
