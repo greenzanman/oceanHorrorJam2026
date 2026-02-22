@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
-using UnityEditorInternal;
+using UnityEngine.InputSystem;
 
 public class TypeOut : MonoBehaviour
 {
@@ -20,23 +18,57 @@ public class TypeOut : MonoBehaviour
     [TextArea(5, 20)]
     [SerializeField] private string fullText;
 
-    
+
     private Button button;
     private Coroutine revealCoroutine;
+    
+    // action to listen for any button press
+    private InputAction anyButtonAction;
+    private bool isTransitioning = false; // Prevents triggering the transition multiple times
 
     private void Awake()
     {
         textComponent.text = "";
         button = GetComponentInChildren<Button>();
         button.gameObject.SetActive(false);
-        button.onClick.AddListener(NextScene);
+        
+        // Listen for clicks on the UI button
+        button.onClick.AddListener(TransitionNextScene);
+
+        // setup anyButtonAction to listen for any button
+        anyButtonAction = new InputAction("AnyPress");
+        anyButtonAction.AddBinding("<Keyboard>/anyKey");
+        anyButtonAction.AddBinding("<Gamepad>/<button>");
+        anyButtonAction.AddBinding("<Mouse>/leftButton");
+
+        // Listen for any button press
+        anyButtonAction.performed += OnAnyButtonPressed;
+    }
+
+    private void OnEnable()
+    {
+        anyButtonAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        anyButtonAction.Disable();
     }
 
     private void Start()
     {
         if (playOnStart)
             StartReveal();
-        //audioSource.PlayOneShot(audioSource.clip);
+    }
+
+    private void OnAnyButtonPressed(InputAction.CallbackContext context)
+    {
+        // Only allow progression if the text is done (the button is visible) 
+        // and we haven't already started transitioning.
+        if (button.gameObject.activeSelf && !isTransitioning)
+        {
+            TransitionNextScene();
+        }
     }
 
     public void StartReveal()
@@ -53,6 +85,7 @@ public class TypeOut : MonoBehaviour
             StopCoroutine(revealCoroutine);
 
         textComponent.text = fullText;
+        button.gameObject.SetActive(true); // show button if skipped
     }
 
     private IEnumerator RevealText()
@@ -81,15 +114,18 @@ public class TypeOut : MonoBehaviour
         fullText = newText;
     }
 
-    void NextScene()
+    void TransitionNextScene()
     {
+        if (isTransitioning) return;
+        isTransitioning = true; // lock to prevent multiple transitions
+
         StartCoroutine(TransitionToNextScene());
         // Implement scene transition logic here
     }
 
     IEnumerator TransitionToNextScene()
-    {
-        buttonPressSound.PlayOneShot(buttonPressSound.clip);
+        {
+            buttonPressSound.PlayOneShot(buttonPressSound.clip);
         // Add any transition effects here (e.g., fade out)
         yield return new WaitForSeconds(3f); // Wait for the effect to finish
         SceneManager.LoadScene(nextSceneName);
