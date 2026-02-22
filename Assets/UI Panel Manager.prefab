@@ -849,9 +849,13 @@ MonoBehaviour:
   energySlider: {fileID: 4200268878700391251}
   fillImage: {fileID: 2717781114333139816}
   canvasGroup: {fileID: 4743867954074484457}
+  strokeStaling: {fileID: 0}
+  previewFillRect: {fileID: 0}
+  previewFillImage: {fileID: 0}
   safeColor: {r: 0.4415095, g: 0.4415095, b: 0.4415095, a: 1}
   dangerColorHigh: {r: 0.5999999, g: 0.33551878, b: 0.29773578, a: 1}
   dangerColorLow: {r: 1, g: 0, b: 0, a: 1}
+  previewColor: {r: 1, g: 0, b: 0, a: 0.6}
 --- !u!225 &4743867954074484457
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1712,7 +1716,7 @@ MonoBehaviour:
   - type: 1
     panelObj: {fileID: 6420888308015354974}
   - type: 2
-    panelObj: {fileID: 0}
+    panelObj: {fileID: 1197065296052776234}
   - type: 3
     panelObj: {fileID: 1197065296052776234}
   defaultPanelType: 0
