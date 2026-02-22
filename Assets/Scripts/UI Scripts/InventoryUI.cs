@@ -1,22 +1,33 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem; // Needed for detecting Gamepad
+using UnityEngine.InputSystem; 
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private InventoryModel model;
     
-    [Header("UI References")]
+    [Header("Text References")]
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI descriptionText;
-    [SerializeField] private TextMeshProUGUI controlsHintText; // <--- Drag your hint text here
+    [SerializeField] private TextMeshProUGUI controlsHintText; 
 
-    private PlayerInput playerInput; // Reference to player input
+    [Header("Button References")]
+    [SerializeField] private Button leftArrowButton;
+    [SerializeField] private Button rightArrowButton;
+    [SerializeField] private Button closeButton;
+
+    private PlayerInput playerInput;
 
     void Awake()
     {
         // Find PlayerInput (Assuming it's on the player character)
         playerInput = FindObjectOfType<PlayerInput>();
+
+        // Wire up the physical UI buttons to our methods
+        if (leftArrowButton != null) leftArrowButton.onClick.AddListener(OnPreviousButtonClicked);
+        if (rightArrowButton != null) rightArrowButton.onClick.AddListener(OnNextButtonClicked);
+        if (closeButton != null) closeButton.onClick.AddListener(OnCloseButtonClicked);
     }
 
     void OnEnable()
@@ -64,5 +75,28 @@ public class InventoryUI : MonoBehaviour
         if (model == null) return;
         if (nameText) nameText.text = model.GetName();
         if (descriptionText) descriptionText.text = model.GetDescription();
+    }
+
+    // --- Button Click Actions ---
+
+    private void OnPreviousButtonClicked()
+    {
+        // Trigger the exact same event your gamepad's Left Trigger uses
+        UIController.OnPrevItem?.Invoke();
+    }
+
+    private void OnNextButtonClicked()
+    {
+        // Trigger the exact same event your gamepad's Right Trigger uses
+        UIController.OnNextItem?.Invoke();
+    }
+
+    private void OnCloseButtonClicked()
+    {
+        // Tell the Panel Manager to close the inventory
+        if (UIPanelManager.Instance != null)
+        {
+            UIPanelManager.Instance.ToggleInventory();
+        }
     }
 }
