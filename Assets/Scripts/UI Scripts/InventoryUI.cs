@@ -50,12 +50,12 @@ public class InventoryUI : MonoBehaviour
         if (input.currentControlScheme == "Gamepad")
         {
             // Gamepad Prompts
-            controlsHintText.text = "LT: Prev  |  RT: Next  |  Start: Close";
+            controlsHintText.text = "LT: Prev  |  RT: Next  \n\n  Start: Close";
         }
         else
         {
             // Keyboard Prompts
-            controlsHintText.text = "Space: Prev  |  LClick: Next  |  F: Close";
+            controlsHintText.text = "Space: Prev  |  LClick: Next  \n\n  F: Close";
         }
     }
 
