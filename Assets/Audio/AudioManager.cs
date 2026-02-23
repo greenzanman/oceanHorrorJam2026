@@ -14,6 +14,12 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] SonarManager sonarController;
 
+    [Header("Sonar & Energy Events")]
+    [SerializeField] EventReference DepletedEnergyEvent;
+    [SerializeField] EventReference SuperSonarEvent;
+    [SerializeField] EventReference SonarReady50Event;
+    [SerializeField] EventReference SonarReady100Event;
+
     float time;
     public void PlayScubaBreath()
     {
@@ -50,7 +56,28 @@ public class AudioManager : MonoBehaviour
                 time = 0f;
             }
         }
+    }
 
-        
+    public void PlayDepletedEnergy()
+    {
+        // 2d ui sound
+        if (!DepletedEnergyEvent.IsNull) RuntimeManager.PlayOneShot(DepletedEnergyEvent);
+    }
+
+    public void PlaySuperSonar()
+    {
+        if (!SuperSonarEvent.IsNull) RuntimeManager.PlayOneShotAttached(SuperSonarEvent, player);
+    }
+
+    public void PlaySonarReady50()
+    {
+        // 2d ui sound
+        if (!SonarReady50Event.IsNull) RuntimeManager.PlayOneShot(SonarReady50Event);
+    }
+
+    public void PlaySonarReady100()
+    {
+        // 2d ui sound
+        if (!SonarReady100Event.IsNull) RuntimeManager.PlayOneShot(SonarReady100Event);
     }
 }

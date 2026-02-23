@@ -176,6 +176,34 @@ MonoBehaviour:
   player: {fileID: 890244835}
   strokeController: {fileID: 890244836}
   sonarController: {fileID: 890244840}
+  DepletedEnergyEvent:
+    Guid:
+      Data1: -980703403
+      Data2: 1088251274
+      Data3: 1310019741
+      Data4: -2109217900
+    Path: event:/ui/ui error
+  SuperSonarEvent:
+    Guid:
+      Data1: 1748779650
+      Data2: 1269029851
+      Data3: 242329498
+      Data4: 351815619
+    Path: event:/sonar ping SUPER
+  SonarReady50Event:
+    Guid:
+      Data1: 1507127486
+      Data2: 1208084951
+      Data3: -112202818
+      Data4: 2105171108
+    Path: event:/ui/ui tick
+  SonarReady100Event:
+    Guid:
+      Data1: 1200775771
+      Data2: 1086787985
+      Data3: 2012484998
+      Data4: 1985670717
+    Path: event:/ui/ui tick more
 --- !u!4 &74582207
 Transform:
   m_ObjectHideFlags: 0
@@ -1982,10 +2010,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2575876510921151989, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: strokeStaling
       value: 
       objectReference: {fileID: 890244836}
+    - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: litIconColor.b
+      value: 0.12941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: litIconColor.g
+      value: 0.45490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: litIconColor.r
+      value: 0.5764706
+      objectReference: {fileID: 0}
     - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: freshTickColor.b
       value: 0.45054463
@@ -2154,6 +2198,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 59
       objectReference: {fileID: 0}
+    - target: {fileID: 5546754031176213391, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.b
+      value: 0.12941174
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546754031176213391, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.g
+      value: 0.45420524
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546754031176213391, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5764706
+      objectReference: {fileID: 0}
     - target: {fileID: 6131420495032871428, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2233,6 +2289,18 @@ PrefabInstance:
     - target: {fileID: 6131420495032871428, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291093335370685222, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.b
+      value: 0.12941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291093335370685222, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.g
+      value: 0.45490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 6291093335370685222, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5764706
       objectReference: {fileID: 0}
     - target: {fileID: 7102799288152309835, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_Name

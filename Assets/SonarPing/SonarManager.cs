@@ -26,7 +26,8 @@ public class SonarManager : MonoBehaviour
     [Range(0.01f, 0.99f)] public float dotSize = 0.5f;
 
     [Header("Audio")]
-    public FMODUnity.EventReference sonarPingEvent;
+    private bool _was50Ready = false;
+    private bool _was100Ready = false;
 
     [Header("4. Energy System")]
     public float maxEnergy = 100f;
@@ -175,6 +176,27 @@ public class SonarManager : MonoBehaviour
 
         // Clamp energy between 0 and Max
         currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
+
+
+
+        // Check current percentages
+        bool is50Ready = currentEnergy >= (maxEnergy * 0.5f);
+        bool is100Ready = currentEnergy >= (maxEnergy * 0.99f);
+
+        // If it just became ready this frame, play the tick!
+        if (is50Ready && !_was50Ready) 
+        {
+            if (audioManager != null) audioManager.PlaySonarReady50();
+        }
+        
+        if (is100Ready && !_was100Ready) 
+        {
+            if (audioManager != null) audioManager.PlaySonarReady100();
+        }
+
+        // Update the history for the next frame
+        _was50Ready = is50Ready;
+        _was100Ready = is100Ready;
     }
 
     // Tries to consume energy. Returns true if successful, false if not enough.
@@ -198,6 +220,7 @@ public class SonarManager : MonoBehaviour
             currentEnergy = 0f;
             _currentRefillTimer = emptyRefillDelay;  // longer refill delay for empty bar
             IsEmptyPenaltyActive = true;            // will trigger ui glow
+            if (audioManager != null) audioManager.PlayDepletedEnergy();
         }
         else
         {
@@ -254,6 +277,9 @@ public class SonarManager : MonoBehaviour
         // 1. Check for Super Sonar (100% Energy)
         if (currentEnergy >= maxEnergy * 0.99f)
         {
+            // play super sonar sound
+            if (audioManager != null) audioManager.PlaySuperSonar();
+
             // Start the burst routine WITH multipliers
             StartCoroutine(PingBurstRoutine(superRangeMultiplier, superSpeedMultiplier));
             _sonarCooldownTimer = sonarCooldown;
