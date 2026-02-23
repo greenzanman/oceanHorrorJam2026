@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class ButtonPush : MonoBehaviour
+public class ButtonPush : UIInteractable
 {
+    [Header("Animation Settings")]
     [SerializeField] private Vector3 pressedOffset = new Vector3(0, -0.1f, 0);
     [SerializeField] private float pressTime = 0.15f;
 
@@ -48,4 +49,14 @@ public class ButtonPush : MonoBehaviour
         }
         transform.localPosition = end;
     }
+
+    
+    public override void Fire()
+    {
+        // Debug.Log("Interactable fired");
+        ExecuteButtonPress();
+
+        base.Fire();
+    }
+    
 }

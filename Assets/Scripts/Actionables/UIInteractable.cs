@@ -7,10 +7,13 @@ public class UIInteractable : MonoBehaviour, Actionable
 {
     [Header("Interaction Settings")]
     [SerializeField] private PanelType panelToShow;
+
+    [Header("Audio Settings")]
+    [SerializeField] private FMODUnity.EventReference interactSound;
     
     [Header("Visuals")]
-    [SerializeField] private GameObject interactionPromptCanvas; // should be world space
-    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] protected GameObject interactionPromptCanvas; // should be world space
+    [SerializeField] protected MeshRenderer meshRenderer;
     [SerializeField] private string interactionVerb = "Access";
     
     private MaterialPropertyBlock propBlock;
@@ -28,7 +31,7 @@ public class UIInteractable : MonoBehaviour, Actionable
         }
     }
 
-    public void SetFocus(bool focused)
+    public virtual void SetFocus(bool focused)
     {
         if (interactionPromptCanvas)
         {
@@ -52,52 +55,39 @@ public class UIInteractable : MonoBehaviour, Actionable
 
     private void UpdatePromptText()
     {
-        // 1. Get the player's input instance (assuming single player)
-        var playerInput = PlayerInput.all.Count > 0 ? PlayerInput.all[0] : null;
-
-        if (playerInput != null)
-        {
-            // 2. Find the 'Interact' action
-            InputAction action = playerInput.actions["Interact"];
-            
-            // 3. Get the binding string (e.g., "E", "A", "Cross")
-            string keyName = action.GetBindingDisplayString();
-
-            // --- DEBUGGING START ---
-            // Remove these lines once it is working
-            Debug.Log($"[UIInteractable] Control Scheme: {playerInput.currentControlScheme}");
-            Debug.Log($"[UIInteractable] Key Found: '{keyName}'");
-            // --- DEBUGGING END ---
-
-            // 4. Set the text
-            promptText.text = $"{interactionVerb} [{keyName}]";
-        }
-        else
-        {
-            // Fallback if no PlayerInput found
-            promptText.text = $"{interactionVerb} [Interact]";
-        }
+        string key = InputHelper.GetBinding("Interact");
+        promptText.text = $"{interactionVerb} [{key}]";
+        
     }
 
     /// show the ui panel associated with this interactable
-    public void Fire()
+    /// play the interact sound
+    public virtual void Fire()
     {
+        // 1. Play the sound first
+        if (!interactSound.IsNull)
+        {
+            FMODUnity.RuntimeManager.PlayOneShot(interactSound, transform.position);
+        }
+        else
+        {
+            Debug.LogWarning($"No interaction sound assigned on {gameObject.name}!");
+        }
+
+        // 2. Then do the UI logic
         if (panelToShow == PanelType.InventoryPanel)
         {
             UIPanelManager.Instance.ToggleInventory();
         }
-            
         else
         {
             UIPanelManager.Instance.ShowPanel(panelToShow);
         }
-            
     }
 
-    public string GetInteractPrompt()
+    public virtual string GetInteractPrompt()
     {
-        var playerInput = PlayerInput.all.Count > 0 ? PlayerInput.all[0] : null;
-        string keyName = playerInput != null ? playerInput.actions["Interact"].GetBindingDisplayString() : "E";
+        string keyName = InputHelper.GetBinding("Interact");
         
         return $"{interactionVerb} [{keyName}]";
     }

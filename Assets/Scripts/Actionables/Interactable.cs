@@ -32,14 +32,8 @@ public class Interactable : MonoBehaviour, Actionable
 
     public string GetInteractPrompt()
     {
-        string key = GetBinding("Interact");
-        return $"Press [{key}] to Interact";
-    }
-
-    private string GetBinding(string actionName)
-    {
-        var playerInput = FindObjectOfType<UnityEngine.InputSystem.PlayerInput>();
-        return playerInput.actions[actionName].GetBindingDisplayString();
+        string key = InputHelper.GetBinding("Interact");
+        return $"INTERACT [{key}]";
     }
     
 }

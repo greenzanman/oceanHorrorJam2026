@@ -10,6 +10,7 @@ public class Carousel : MonoBehaviour
     [SerializeField] private float rotationAngle = 15f;
     [SerializeField] private float spacing = 2f;
     [SerializeField] private float moveDuration = 0.3f;
+    [SerializeField] private AnimationCurve moveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     public static Action<string, string, string> onItemChanged;
 
@@ -95,7 +96,9 @@ public class Carousel : MonoBehaviour
         while (elapsed < moveDuration)
         {
             elapsed += Time.unscaledDeltaTime; // Use unscaled for pause menu
-            float t = Mathf.Clamp01(elapsed / moveDuration);
+            // Apply the AnimationCurve to the progress 't'
+            float t = moveCurve.Evaluate(Mathf.Clamp01(elapsed / moveDuration));
+
             for (int i = 0; i < items.Count; i++)
             {
                 items[i].localPosition = Vector3.Lerp(startPositions[i], endPositions[i], t);
@@ -135,7 +138,28 @@ public class Carousel : MonoBehaviour
         t.gameObject.SetActive(true);
         t.localPosition = Vector3.zero;
         t.localRotation = Quaternion.identity;
-        t.localScale = Vector3.one;
+
+
+        // Calculate bounds to normalize scale
+        Bounds combinedBounds = new Bounds(Vector3.zero, Vector3.zero);
+        Renderer[] renderers = t.GetComponentsInChildren<Renderer>();
+        if (renderers.Length > 0)
+        {
+            combinedBounds = renderers[0].localBounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                combinedBounds.Encapsulate(renderers[i].localBounds);
+            }
+
+            float maxDim = Mathf.Max(combinedBounds.size.x, combinedBounds.size.y, combinedBounds.size.z);
+            // Rescale so the largest side is exactly targetScale units
+            float targetScale = 0.1f;
+            t.localScale = maxDim > 0 ? (Vector3.one * targetScale) / maxDim : (Vector3.one * targetScale);
+        }
+        else
+        {
+            t.localScale = Vector3.one;
+        }
 
         items.Add(t);
         RebuildLayout();
@@ -148,7 +172,8 @@ public class Carousel : MonoBehaviour
     {
         for (int i = 0; i < items.Count; i++)
         {
-            items[i].localPosition = new Vector3(i * spacing, 0, 0);
+            // Offsets positions so the currentItem is always at x=0
+            items[i].localPosition = new Vector3((i - currentItem) * spacing, 0, 0);
         }
     }
 

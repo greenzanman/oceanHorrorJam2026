@@ -1,11 +1,16 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FMODUnity;
+using FMOD.Studio;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(Rigidbody))]
 public class StrokeStaling : MonoBehaviour
 {
+    [Header("FMOD Audio")]
+    public EventReference strokeFmodEvent;
+
     [Header("Horizontal Burst")]
     public float horizontalStrokeForce = 5f;
 
@@ -33,6 +38,15 @@ public class StrokeStaling : MonoBehaviour
     private bool _isStroking = false;
     public bool IsStroking => _isStroking;
     public bool IsFullyUnstaled => currentStaleMultiplier >= 0.99f;
+
+    // tell ppl exactly when stroke happens
+    public event System.Action OnStrokeEvent;
+
+    // Returns a number 1.0 to 0.0 (fully fresh, to fully stale)
+    public float GetStalenessNormalized()
+    {
+        return Mathf.InverseLerp(minStaleThreshold, 1f, currentStaleMultiplier);
+    }
 
     void Start()
     {
@@ -63,6 +77,12 @@ public class StrokeStaling : MonoBehaviour
 
     private void ExecuteStroke()
     {
+        // tell sonar manager to evaluate if we should ping on this stroke (50% or 100% energy)
+        if (SonarManager.Instance != null)
+        {
+            SonarManager.Instance.EvaluateStrokeSonar();
+        }
+
         // 1 & 2. Get the calculated cost for the next stroke
         float energyCost = GetNextStrokeCost();
 
@@ -74,6 +94,24 @@ public class StrokeStaling : MonoBehaviour
         }
 
         _isStroking = true;
+
+        // tell listeners we stroked
+        OnStrokeEvent?.Invoke();
+
+        // AUDIO TRIGGER
+        if (!strokeFmodEvent.IsNull)
+        {
+            // Create an instance, set the Staleness parameter, play, and release memory
+            EventInstance strokeInst = RuntimeManager.CreateInstance(strokeFmodEvent);
+
+            // attach to player
+            RuntimeManager.AttachInstanceToGameObject(strokeInst, gameObject, rb);
+            
+            strokeInst.setParameterByName("Staleness", currentStaleMultiplier);
+            strokeInst.start();
+            strokeInst.release(); 
+        }
+
 
         // 4. Apply Physics (Force still gets weaker when stale)
         float modifiedForce = horizontalStrokeForce * currentStaleMultiplier;

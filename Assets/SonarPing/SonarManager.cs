@@ -25,6 +25,9 @@ public class SonarManager : MonoBehaviour
     [Tooltip("Higher = Smaller Dots")] public float gridScale = 50.0f; 
     [Range(0.01f, 0.99f)] public float dotSize = 0.5f;
 
+    [Header("Audio")]
+    public FMODUnity.EventReference sonarPingEvent;
+
     [Header("4. Energy System")]
     public float maxEnergy = 100f;
     public float safeZoneRechargeRate = 50f; // Rapid refill in safe zone (elevator) 
@@ -32,6 +35,16 @@ public class SonarManager : MonoBehaviour
     public float emptyRefillDelay = 2.0f;
     private float _currentRefillTimer = 0f;
     public bool IsEmptyPenaltyActive { get; private set; }
+
+    [Header("Sonar Auto-Ping Settings")]
+    public float sonarCooldown = 0f; // How often the 50% ping can happen
+    private float _sonarCooldownTimer = 0f;
+    public bool IsSonarReady() { return _sonarCooldownTimer <= 0f; }
+
+    [Header("Super Sonar (100% Energy)")]
+    public float superRangeMultiplier = 2.0f;
+    public float superSpeedMultiplier = 1.5f;
+
     
     [Header("Outside Regeneration Curve")]
     [Tooltip("Maximum regen speed when energy is 0.")]
@@ -64,7 +77,7 @@ public class SonarManager : MonoBehaviour
     {
         // Debug Key (only in development)
         #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Semicolon)) OnFire();
+        if (Input.GetKeyDown(KeyCode.Semicolon)) EvaluateStrokeSonar();
         #endif
 
         // 1. Update Wave Data (Positions/Radii)
@@ -75,6 +88,9 @@ public class SonarManager : MonoBehaviour
 
         // 3. Update Energy System
         HandleEnergy();
+
+        // tick cooldown timer down
+        if (_sonarCooldownTimer > 0f) _sonarCooldownTimer -= Time.deltaTime;
     }
 
     void UpdateWaveData()
@@ -191,19 +207,20 @@ public class SonarManager : MonoBehaviour
         return true;
     }
 
-    public void OnFire()
-    {
-        float pingCost = maxEnergy / 3f;
+    // OLD: manual ping trigger
+    // public void OnFire()
+    // {
+    //     float pingCost = maxEnergy / 3f;
 
-        if (TryConsumeEnergy(pingCost))
-        {
-            StartCoroutine(PingBurstRoutine());
-        }
-        else
-        {
-            Debug.Log("Not enough energy to ping!");
-        }
-    }
+    //     if (TryConsumeEnergy(pingCost))
+    //     {
+    //         StartCoroutine(PingBurstRoutine());
+    //     }
+    //     else
+    //     {
+    //         Debug.Log("Not enough energy to ping!");
+    //     }
+    // }
 
     public void RegisterPing(SonarPingSphere ping)
     {
@@ -220,18 +237,40 @@ public class SonarManager : MonoBehaviour
         inSafeZone = isSafe;
     }
 
-    private IEnumerator PingBurstRoutine()
+    private IEnumerator PingBurstRoutine(float rangeMult, float speedMult)
     {
         audioManager.PlaySonarPing();
         
         for (int i = 0; i < pingsPerFire; i++)
         {
-            SpawnPing();
+            SpawnPing(rangeMult, speedMult);
             yield return new WaitForSeconds(burstInterval);
         }
     }
 
-    private void SpawnPing()
+    // Called by StrokeStaling right BEFORE it consumes the normal stroke energy
+    public void EvaluateStrokeSonar()
+    {
+        // 1. Check for Super Sonar (100% Energy)
+        if (currentEnergy >= maxEnergy * 0.99f)
+        {
+            // Start the burst routine WITH multipliers
+            StartCoroutine(PingBurstRoutine(superRangeMultiplier, superSpeedMultiplier));
+            _sonarCooldownTimer = sonarCooldown;
+            TryConsumeEnergy(maxEnergy + 1f); // 101% drain
+            return;
+        }
+
+        // 2. Check for Regular Auto-Sonar (>= 50% Energy)
+        if (currentEnergy >= maxEnergy * 0.5f && IsSonarReady() && !IsEmptyPenaltyActive)
+        {
+            // Start the burst routine WITHOUT multipliers (1.0 default)
+            StartCoroutine(PingBurstRoutine(1.0f, 1.0f));
+            _sonarCooldownTimer = sonarCooldown;
+        }
+    }
+
+    private void SpawnPing(float rangeMult, float speedMult)
     {
         if (pingPrefab != null)
         {
@@ -239,7 +278,7 @@ public class SonarManager : MonoBehaviour
             SonarPingSphere sphereScript = go.GetComponent<SonarPingSphere>();
             if (sphereScript != null)
             {
-                sphereScript.Initialize(maxRange, scannerSpeed);
+                sphereScript.Initialize(maxRange * rangeMult, scannerSpeed * speedMult);
             }
         }
     }

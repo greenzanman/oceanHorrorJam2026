@@ -13,5 +13,6 @@ public interface Actionable
     // This class is a marker
     void Fire();
     void SetFocus(bool focused);
+    //deprecated i think; set prompt text in the inspector
     string GetInteractPrompt();
 }
