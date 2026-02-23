@@ -27,7 +27,11 @@ public class SonarManager : MonoBehaviour
 
     [Header("4. Energy System")]
     public float maxEnergy = 100f;
-    public float safeZoneRechargeRate = 50f; // Rapid fill in elevator
+    public float safeZoneRechargeRate = 50f; // Rapid refill in safe zone (elevator) 
+    public float refillDelay = 0.2f; // Delay before regeneration starts
+    public float emptyRefillDelay = 2.0f;
+    private float _currentRefillTimer = 0f;
+    public bool IsEmptyPenaltyActive { get; private set; }
     
     [Header("Outside Regeneration Curve")]
     [Tooltip("Maximum regen speed when energy is 0.")]
@@ -40,7 +44,7 @@ public class SonarManager : MonoBehaviour
     
     [Header("Debug View")]
     public float currentEnergy;
-    public bool inSafeZone = true; // Default to true (start in elevator)
+    public bool inSafeZone = true; // Default to true (since start in elevator)
 
     [Header("Audio")]
     [SerializeField] private AudioManager audioManager;
@@ -58,8 +62,10 @@ public class SonarManager : MonoBehaviour
 
     void Update()
     {
-        // Debug Key
+        // Debug Key (only in development)
+        #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Semicolon)) OnFire();
+        #endif
 
         // 1. Update Wave Data (Positions/Radii)
         UpdateWaveData();
@@ -114,6 +120,19 @@ public class SonarManager : MonoBehaviour
 
     void HandleEnergy()
     {
+        // 1. Process Refill Delay (Halt regeneration while timer is active)
+        if (_currentRefillTimer > 0f)
+        {
+            _currentRefillTimer -= Time.deltaTime;
+            
+            // If the timer just finished, turn off the penalty state
+            if (_currentRefillTimer <= 0f) 
+            {
+                IsEmptyPenaltyActive = false; 
+            }
+            return; 
+        }
+
         float oneThird = maxEnergy / 3f;
 
         if (inSafeZone)
@@ -145,51 +164,55 @@ public class SonarManager : MonoBehaviour
     // Tries to consume energy. Returns true if successful, false if not enough.
     public bool TryConsumeEnergy(float amount)
     {
-        // If inside safe zone, actions are free!
+        // GUARD CHECKS:
+        // In safe zone: do the action for 0 energy cost
         if (inSafeZone) return true;
 
-        if (currentEnergy >= amount)
+        // empty bar penalty: no action
+        if (IsEmptyPenaltyActive) return false;
+
+
+        // take da energy
+        currentEnergy -= amount;
+
+        // Check if we depleted energy past 0, apply penalty if so
+        if (currentEnergy <= 0.01f) 
         {
-            currentEnergy -= amount;
-            return true;
+            // empty bar penalty
+            currentEnergy = 0f;
+            _currentRefillTimer = emptyRefillDelay;  // longer refill delay for empty bar
+            IsEmptyPenaltyActive = true;            // will trigger ui glow
         }
-        
-        return false;
+        else
+        {
+            _currentRefillTimer = refillDelay;      // normal refill delay
+        }
+
+        return true;
     }
 
-    // --- REGISTRATION ---
-    public void RegisterPing(SonarPingSphere ping)
-    {
-        if (!activeSpheres.Contains(ping)) activeSpheres.Add(ping);
-    }
-
-    // called by the ping itself when it dies, so we stop sending data to the shader for it
-    public void UnregisterPing(SonarPingSphere ping)
-    {
-        if (activeSpheres.Contains(ping)) activeSpheres.Remove(ping);
-    }
-
-    // --- SPAWNING ---
     public void OnFire()
     {
         float pingCost = maxEnergy / 3f;
 
-        // Can fire if in Safe Zone OR if we have enough energy
-        if (inSafeZone || currentEnergy >= pingCost)
+        if (TryConsumeEnergy(pingCost))
         {
-            // Only deduct energy if OUTSIDE safe zone
-            if (!inSafeZone)
-            {
-                currentEnergy -= pingCost;
-            }
-
             StartCoroutine(PingBurstRoutine());
         }
         else
         {
             Debug.Log("Not enough energy to ping!");
-            // TODO: sfx add errory sound
         }
+    }
+
+    public void RegisterPing(SonarPingSphere ping)
+    {
+        if (!activeSpheres.Contains(ping)) activeSpheres.Add(ping);
+    }
+
+    public void UnregisterPing(SonarPingSphere ping)
+    {
+        if (activeSpheres.Contains(ping)) activeSpheres.Remove(ping);
     }
 
     public void SetSafeZone(bool isSafe)

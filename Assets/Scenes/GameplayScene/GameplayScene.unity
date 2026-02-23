@@ -1800,10 +1800,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3316565090698310796, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: strokeStaling
+      value: 
+      objectReference: {fileID: 890244836}
     - target: {fileID: 6131420495032871428, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: m_Pivot.x
       value: 0

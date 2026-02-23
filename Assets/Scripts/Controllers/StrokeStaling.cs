@@ -32,6 +32,7 @@ public class StrokeStaling : MonoBehaviour
 
     private bool _isStroking = false;
     public bool IsStroking => _isStroking;
+    public bool IsFullyUnstaled => currentStaleMultiplier >= 0.99f;
 
     void Start()
     {
@@ -53,15 +54,17 @@ public class StrokeStaling : MonoBehaviour
         ExecuteStroke();
     }
 
+    // get the predicted cost of next stroke
+    public float GetNextStrokeCost()
+    {
+        float t = Mathf.InverseLerp(minStaleThreshold, 1f, currentStaleMultiplier);
+        return Mathf.Lerp(maxEnergyCost, minEnergyCost, t);
+    }
+
     private void ExecuteStroke()
     {
-        // 1. Calculate "Freshness" (0.0 = Fully Stale, 1.0 = Fully Fresh)
-        float t = Mathf.InverseLerp(minStaleThreshold, 1f, currentStaleMultiplier);
-
-        // 2. CALCULATE COST (INVERTED)
-        // If t = 1.0 (Fresh) -> Use minEnergyCost (Efficient)
-        // If t = 0.0 (Stale) -> Use maxEnergyCost (Punishing)
-        float energyCost = Mathf.Lerp(maxEnergyCost, minEnergyCost, t);
+        // 1 & 2. Get the calculated cost for the next stroke
+        float energyCost = GetNextStrokeCost();
 
         // 3. Try to consume energy
         if (SonarManager.Instance != null && !SonarManager.Instance.TryConsumeEnergy(energyCost))
@@ -72,7 +75,7 @@ public class StrokeStaling : MonoBehaviour
 
         _isStroking = true;
 
-        // 4. Apply Physics (Force still gets weaker when stale, that remains the same)
+        // 4. Apply Physics (Force still gets weaker when stale)
         float modifiedForce = horizontalStrokeForce * currentStaleMultiplier;
         
         Vector3 camForward = Camera.main.transform.forward;
