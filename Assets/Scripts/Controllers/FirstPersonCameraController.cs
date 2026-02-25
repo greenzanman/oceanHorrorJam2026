@@ -4,60 +4,62 @@ using UnityEngine.InputSystem;
 public class FirstPersonCameraController : MonoBehaviour
 {
     public float sensitivity = 0.2f;
+    public float smoothTime = 0.1f;
 
-    private float xRotation = 0f;
     private Transform playerBody;
     private Rigidbody playerRb;
 
-    // stored mouse input deltas to use
-    private float mouseX;
-    private float mouseY;
+    private float targetXRotation = 0f;
+    private float targetYRotation = 0f;
 
-    // smoothing variables
-    private float smoothMouseX;
-    private float smoothMouseY;
-    private float smoothMouseXVelocity;
-    private float smoothMouseYVelocity;
-    public float smoothTime = 0.2f;
+    private float currentXRotation = 0f;
+    private float currentYRotation = 0f;
+
+    private float xRotationVelocity;
+    private float yRotationVelocity;
 
     void Start()
     {
         playerBody = transform.parent;
         playerRb = playerBody.GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Initialize to current body rotation to prevent snapping on start
+        targetYRotation = playerBody.eulerAngles.y;
+        currentYRotation = targetYRotation;
     }
 
     public void OnLook(InputValue value)
     {
         Vector2 lookInput = value.Get<Vector2>();
-        // store the mouse input to use below
-        mouseX = lookInput.x * sensitivity;
-        mouseY = lookInput.y * sensitivity;
+        
+        // Accumulate raw input directly into the target angles
+        targetYRotation += lookInput.x * sensitivity;
+        targetXRotation -= lookInput.y * sensitivity;
+        
+        // Prevent looking too far up or down
+        targetXRotation = Mathf.Clamp(targetXRotation, -90f, 90f);
     }
 
-    // run camera and player rotation after game logic (Update) but before rendering
-    void LateUpdate()
+    void Update()
     {
-        // don't rotate if the game is paused
         if (Time.timeScale == 0) return;
 
-        // Apply smoothing to mouse input using SmoothDamp
-        smoothMouseX = Mathf.SmoothDamp(smoothMouseX, mouseX, ref smoothMouseXVelocity, smoothTime);
-        smoothMouseY = Mathf.SmoothDamp(smoothMouseY, mouseY, ref smoothMouseYVelocity, smoothTime);
+        // Smoothly interpolate the current angles toward the target angles
+        currentXRotation = Mathf.SmoothDamp(currentXRotation, targetXRotation, ref xRotationVelocity, smoothTime);
+        currentYRotation = Mathf.SmoothDamp(currentYRotation, targetYRotation, ref yRotationVelocity, smoothTime);
 
-        // Vertical rotation (pitch)
-        xRotation -= smoothMouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        // Apply pitch (up/down) locally to the camera
+        transform.localRotation = Quaternion.Euler(currentXRotation, 0f, 0f);
+    }
 
-        // Horizontal rotation (yaw)
-        if (playerBody != null)
+    void FixedUpdate()
+    {
+        // Apply yaw (left/right) to the physics body using MoveRotation
+        if (playerRb != null)
         {
-            playerBody.Rotate(Vector3.up * smoothMouseX);
+            Quaternion targetBodyRotation = Quaternion.Euler(0f, currentYRotation, 0f);
+            playerRb.MoveRotation(targetBodyRotation);
         }
-
-        // Clear mouse deltas after applying
-        mouseX = 0;
-        mouseY = 0;
     }
 }
