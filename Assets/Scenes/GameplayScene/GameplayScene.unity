@@ -743,6 +743,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2019119490843597044, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 2.31
+      objectReference: {fileID: 0}
     - target: {fileID: 4794165630735474636, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.45
@@ -805,7 +829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6353763046609859596, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
       propertyPath: shortDescription
-      value: HEAVY-FUTY CRANK. RUSTY. TASTES LIKE DOOR. BIG METAL DOOR.
+      value: HEAVY-DUTY CRANK. RUSTY. TASTES LIKE DOOR. BIG METAL DOOR.
       objectReference: {fileID: 0}
     - target: {fileID: 6353763046609859596, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
       propertyPath: interactSound.Path
@@ -834,6 +858,10 @@ PrefabInstance:
     - target: {fileID: 6509162949407642068, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
       propertyPath: m_Name
       value: Crank
+      objectReference: {fileID: 0}
+    - target: {fileID: 9102913172593905725, guid: d24241f7948de094b8ff11096fab11bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1348,6 +1376,18 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1326958631}
+    - target: {fileID: 9177157105858543272, guid: 5014e57d8edf7fd45bf480fd88bf5c96, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 9177157105858543272, guid: 5014e57d8edf7fd45bf480fd88bf5c96, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 9177157105858543272, guid: 5014e57d8edf7fd45bf480fd88bf5c96, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
