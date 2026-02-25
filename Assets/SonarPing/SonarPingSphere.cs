@@ -11,16 +11,18 @@ public class SonarPingSphere : MonoBehaviour
 
     private float maxRange;
     private float speed;
+    private float fadeMultiplier = 1f;
     private float age;
     private bool isInitialized = false;
 
     // get our owwn renderer for the color
     [SerializeField] private Renderer meshRenderer; 
 
-    public void Initialize(float range, float scannerSpeed)
+    public void Initialize(float range, float scannerSpeed, float fadeMult = 1f)
     {
         this.maxRange = range;
         this.speed = scannerSpeed;
+        this.fadeMultiplier = fadeMult;
         this.age = 0;
         this.CurrentRadius = 0;
         this.CurrentIntensity = 1;
@@ -36,28 +38,30 @@ public class SonarPingSphere : MonoBehaviour
     {
         if (!isInitialized) return;
 
-        // 1. Calculate Growth
         age += Time.deltaTime;
-        CurrentRadius = age * speed;
 
-        // 2. Calculate Fade (Intensity goes from 1 to 0)
-        // We fade out as we approach max range
-        float percentComplete = CurrentRadius / maxRange;
-        CurrentIntensity = 1.0f - percentComplete;
+        // 1. Calculate Growth (Mathf.Min ensures it stops expanding when it hits maxRange!)
+        CurrentRadius = Mathf.Min(age * speed, maxRange);
 
-        // 3. Physical Scale (Visual Sphere size)
-        transform.localScale = Vector3.one * CurrentRadius * 2; // *2 because radius vs diameter
+        // 2. Calculate Fade based on TIME, not radius
+        float standardLifespan = maxRange / speed; 
+        float totalLifespan = standardLifespan * fadeMultiplier; // Apply the linger!
+        
+        CurrentIntensity = 1.0f - (age / totalLifespan);
 
-        // 4. Update own material color (Optional, for the sphere mesh itself)
+        // 3. Physical Scale
+        transform.localScale = Vector3.one * CurrentRadius * 2; 
+
+        // 4. Visual Mesh Fade
         if (meshRenderer != null)
         {
             Color c = meshRenderer.material.color;
-            c.a = CurrentIntensity; // Fade out alpha
+            c.a = CurrentIntensity; 
             meshRenderer.material.color = c;
         }
 
-        // 5. Kill when done
-        if (CurrentRadius > maxRange || CurrentIntensity <= 0)
+        // 5. Kill ONLY when completely faded out
+        if (CurrentIntensity <= 0)
         {
             DestroyPing();
         }

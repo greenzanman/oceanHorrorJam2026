@@ -45,6 +45,7 @@ public class SonarManager : MonoBehaviour
     [Header("Super Sonar (100% Energy)")]
     public float superRangeMultiplier = 2.0f;
     public float superSpeedMultiplier = 1.5f;
+    public float superFadeMultiplier = 3.0f;
 
     
     [Header("Outside Regeneration Curve")]
@@ -159,6 +160,8 @@ public class SonarManager : MonoBehaviour
             {
                 currentEnergy += safeZoneRechargeRate * Time.deltaTime;
             }
+
+            currentEnergy = Mathf.Min(currentEnergy, maxEnergy * 0.65f);
         }
         else
         {
@@ -258,15 +261,20 @@ public class SonarManager : MonoBehaviour
     public void SetSafeZone(bool isSafe)
     {
         inSafeZone = isSafe;
+
+        if (inSafeZone && currentEnergy > maxEnergy * 0.65f)
+        {
+            currentEnergy = maxEnergy * 0.65f;
+        }
     }
 
-    private IEnumerator PingBurstRoutine(float rangeMult, float speedMult)
+    private IEnumerator PingBurstRoutine(float rangeMult, float speedMult, float fadeMult)
     {
         audioManager.PlaySonarPing();
         
         for (int i = 0; i < pingsPerFire; i++)
         {
-            SpawnPing(rangeMult, speedMult);
+            SpawnPing(rangeMult, speedMult, fadeMult);
             yield return new WaitForSeconds(burstInterval);
         }
     }
@@ -281,7 +289,7 @@ public class SonarManager : MonoBehaviour
             if (audioManager != null) audioManager.PlaySuperSonar();
 
             // Start the burst routine WITH multipliers
-            StartCoroutine(PingBurstRoutine(superRangeMultiplier, superSpeedMultiplier));
+            StartCoroutine(PingBurstRoutine(superRangeMultiplier, superSpeedMultiplier, superFadeMultiplier));
             _sonarCooldownTimer = sonarCooldown;
             TryConsumeEnergy(maxEnergy + 1f); // 101% drain
             return;
@@ -291,12 +299,12 @@ public class SonarManager : MonoBehaviour
         if (currentEnergy >= maxEnergy * 0.5f && IsSonarReady() && !IsEmptyPenaltyActive)
         {
             // Start the burst routine WITHOUT multipliers (1.0 default)
-            StartCoroutine(PingBurstRoutine(1.0f, 1.0f));
+            StartCoroutine(PingBurstRoutine(1.0f, 1.0f, 1.0f));
             _sonarCooldownTimer = sonarCooldown;
         }
     }
 
-    private void SpawnPing(float rangeMult, float speedMult)
+    private void SpawnPing(float rangeMult, float speedMult, float fadeMult)
     {
         if (pingPrefab != null)
         {
@@ -304,8 +312,14 @@ public class SonarManager : MonoBehaviour
             SonarPingSphere sphereScript = go.GetComponent<SonarPingSphere>();
             if (sphereScript != null)
             {
-                sphereScript.Initialize(maxRange * rangeMult, scannerSpeed * speedMult);
+                sphereScript.Initialize(maxRange * rangeMult, scannerSpeed * speedMult, fadeMult);
             }
         }
+    }
+
+    // so enemies can read the active rings
+    public List<SonarPingSphere> GetActivePings()
+    {
+        return activeSpheres;
     }
 }
