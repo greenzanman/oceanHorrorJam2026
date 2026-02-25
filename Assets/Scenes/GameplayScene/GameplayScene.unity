@@ -3224,7 +3224,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1771685034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4117,6 +4117,18 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 74582206}
+    - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: staleFactor
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: maxRecoverySpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: recoveryAcceleration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: strokeFmodEvent.Path
       value: event:/jet propulsion
