@@ -3311,7 +3311,7 @@ MonoBehaviour:
       Data2: 1116601877
       Data3: -1671743833
       Data4: 525537238
-    Path: event:/enemy beep
+    Path: event:/monster/enemy beep
   anticipationEvent:
     Guid:
       Data1: 222195750

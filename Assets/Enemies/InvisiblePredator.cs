@@ -246,8 +246,13 @@ public class StalkerEnemy : MonoBehaviour
     {
         if (_beepInstance.isValid())
         {
+            // Detach it so it survives the GameObject's destruction
+            RuntimeManager.DetachInstanceFromGameObject(_beepInstance);
+            
+            // Tell FMOD to stop, but allow the AHDSR release envelope to play
             _beepInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             _beepInstance.release();
+            _beepInstance.clearHandle();
         }
     }
 }
