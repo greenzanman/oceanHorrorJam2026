@@ -187,15 +187,20 @@ public class SonarManager : MonoBehaviour
         bool is100Ready = currentEnergy >= (maxEnergy * 0.99f);
 
         // If it just became ready this frame, play the tick!
-        if (is50Ready && !_was50Ready) 
+        // - except at play start
+        if (Time.timeSinceLevelLoad > 0.5f)
         {
-            if (audioManager != null) audioManager.PlaySonarReady50();
+            if (is50Ready && !_was50Ready) 
+            {
+                if (audioManager != null) audioManager.PlaySonarReady50();
+            }
+            
+            if (is100Ready && !_was100Ready) 
+            {
+                if (audioManager != null) audioManager.PlaySonarReady100();
+            }
         }
         
-        if (is100Ready && !_was100Ready) 
-        {
-            if (audioManager != null) audioManager.PlaySonarReady100();
-        }
 
         // Update the history for the next frame
         _was50Ready = is50Ready;
