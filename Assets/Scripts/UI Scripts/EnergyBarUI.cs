@@ -211,7 +211,8 @@ public class EnergyBarUI : MonoBehaviour
         
 
         // 6. Overall Visibility
-        if (isSafe && current >= max) canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, 0f, 2.5f * Time.deltaTime);
+        if (isSafe)
+            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, 0f, 2.5f * Time.deltaTime);
         else canvasGroup.alpha = 1f;
     }
 
