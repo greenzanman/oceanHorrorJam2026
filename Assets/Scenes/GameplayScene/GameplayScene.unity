@@ -3243,7 +3243,7 @@ MonoBehaviour:
   minDistance: 2
   cursorAvoidanceSpeed: 15
   viewConeAngle: 45
-  basePanicRiseSpeed: 100
+  basePanicRiseSpeed: 70
   basePanicDrainSpeed: 10
   approachEaseCurve:
     serializedVersion: 2
@@ -4010,8 +4010,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9095966450029517478, guid: a54026f9a7b54d94ba65cd06c1bdae06, type: 3}
       propertyPath: shortDescription
-      value: From the glimpses I caught, they don't seem like anything we have in
-        our records, so I've been wary about getting too close.
+      value: "Y'know, I'm not scared of many things. I've climbed Everest, dove in
+        the Great Trench (unassisted), and I've even socked my armed, 6 foot tall
+        mother right in the nose. \n\nBut THIS? Y'ALL KNOW humans fear the dark.
+        IT'S A BIOLOGICAL, EVOLUTIONARY, BUILT-INNNN SURVIVAL MECHANISM, but nah, 
+        y'all keep saying \"It's not reeaaal\" - do you know HOW MANY TIMES on my
+        form I EXPLICITLY noted: \"Please sirs, anywhere but the dark.\" AND THEN
+        YOU SEND ME HERE??? HAHAHAHAHAHAHAHAHAHAHAHAHAH HERE'S YOOUR FUCKING REPORT:\n\n[Unauthorized
+        Access]\n"
       objectReference: {fileID: 0}
     - target: {fileID: 9095966450029517478, guid: a54026f9a7b54d94ba65cd06c1bdae06, type: 3}
       propertyPath: interactSound.Path

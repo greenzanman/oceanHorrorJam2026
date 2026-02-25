@@ -23,9 +23,16 @@ public class StrokeStaling : MonoBehaviour
     [Tooltip("How much power is kept after one use. 0.7 = 30% reduction per use.")]
     public float staleFactor = 0.7f;
     [Tooltip("How fast the power returns to 1.0 per second.")]
-    public float recoveryRate = 0.5f;
-    [Tooltip("The minimum power floor so strokes never reach 0 force.")]
     public float minStaleThreshold = 0.2f;
+
+    [Header("Momentum Recovery")]
+    [Tooltip("How fast the recovery velocity increases per second (like gravity acceleration).")]
+    public float recoveryAcceleration = 1.5f; 
+    [Tooltip("The maximum speed the recovery can reach so it doesn't snap instantly.")]
+    public float maxRecoverySpeed = 3.0f;
+
+    // This tracks the current speed of the recovery
+    private float currentRecoveryVelocity = 0f;
 
     [Header("Energy Costs")]
     public float maxEnergyCost = 10f; // 10% of 100
@@ -56,10 +63,28 @@ public class StrokeStaling : MonoBehaviour
 
     void Update()
     {
-        // Recover power over time
         if (currentStaleMultiplier < 1f)
         {
-            currentStaleMultiplier = Mathf.MoveTowards(currentStaleMultiplier, 1f, recoveryRate * Time.deltaTime);
+            // 1. Accelerate the velocity over time (like gravity)
+            currentRecoveryVelocity += recoveryAcceleration * Time.deltaTime;
+            
+            // 2. Clamp the velocity so it doesn't infinitely accelerate
+            currentRecoveryVelocity = Mathf.Min(currentRecoveryVelocity, maxRecoverySpeed);
+
+            // 3. Apply the velocity to the actual multiplier
+            currentStaleMultiplier += currentRecoveryVelocity * Time.deltaTime;
+
+            // 4. Cap it at 1.0 and reset momentum when fully recovered
+            if (currentStaleMultiplier >= 1f)
+            {
+                currentStaleMultiplier = 1f;
+                currentRecoveryVelocity = 0f;
+            }
+        }
+        else
+        {
+            // Ensure momentum stays at 0 when we are fully fresh
+            currentRecoveryVelocity = 0f;
         }
     }
 
@@ -125,6 +150,9 @@ public class StrokeStaling : MonoBehaviour
         // 5. Apply Staling
         currentStaleMultiplier *= staleFactor;
         if (currentStaleMultiplier < minStaleThreshold) currentStaleMultiplier = minStaleThreshold;
+        
+        // KILL THE MOMENTUM so the acceleration has to build up from zero again
+        currentRecoveryVelocity = 0f;
     }
 
     private IEnumerator ApplyVerticalCurveRoutine(float staleAtTimeOfStart)
