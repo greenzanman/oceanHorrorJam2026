@@ -232,7 +232,14 @@ public class StalkerEnemy : MonoBehaviour
     private void Die()
     {
         Debug.Log("PLAYER KILLED BY STALKER");
-        // Trigger death sequence
+        isStalking = false; // Stop tracking logic
+        
+        // Find the manager and start the show
+        FindObjectOfType<GameOverManager>().StartGameOverSequence();
+        
+        // Hide the monster instantly without fully destroying it right away, 
+        // or let the OnDestroy handle the audio cleanup if you do Destroy(gameObject).
+        Destroy(gameObject); 
     }
 
     private void DefeatEnemy()

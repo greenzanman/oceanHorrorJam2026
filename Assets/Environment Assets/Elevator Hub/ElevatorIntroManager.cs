@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 public class ElevatorIntroManager : MonoBehaviour
 {
+    [Header("Debug / Testing")]
+    [SerializeField] private bool skipIntro = false;
+
     [Header("UI & Player Control")]
     [SerializeField] private Image blackScreen;
     [SerializeField] private PlayerInput playerInput; 
@@ -25,6 +28,20 @@ public class ElevatorIntroManager : MonoBehaviour
 
     void Start()
     {
+        // if skipintro true
+        if (skipIntro)
+        {
+            // Instantly clear screen and restore control
+            blackScreen.gameObject.SetActive(false);
+            if (playerInput != null) playerInput.enabled = true;
+
+            // Instantly open doors
+            if (doorAnimator != null) doorAnimator.SetTrigger("Open");
+            
+            return; // stop rest of script
+        }
+
+        // normal intro logic
         blackScreen.gameObject.SetActive(true);
         StartCoroutine(PlayIntroSequence());
         StartCoroutine(ShakeCamera()); // Start the shake at the exact same time
