@@ -30,6 +30,10 @@ Shader "Custom/TerrainPingShader" {
             uniform float _SonarGridScale;
             uniform float _SonarDotSize;
             uniform float _SceneViewVisibility; // Added for Scene View visibility
+            uniform float4 _ColorLow;
+            uniform float4 _ColorHigh;
+            uniform float _MinY;
+            uniform float _MaxY;
 
             // Arrays
             uniform int _PointCount;
@@ -70,7 +74,7 @@ Shader "Custom/TerrainPingShader" {
                         // We use 'pow' to make the ring thinner. 
                         // Higher power = Thinner ring at the edge.
                         // We multiply by _SonarFadeStrength * 4 to give you more control.
-                        float ringEdge = pow(hollowNormalized, _SonarFadeStrength * 4);
+                        float ringEdge = pow(hollowNormalized, _SonarFadeStrength * 2);
                         
                         // Multiply by global intensity (source.w) so it still fades over time
                         float val = source.w * ringEdge;
@@ -88,7 +92,16 @@ Shader "Custom/TerrainPingShader" {
                 
                 // 3. COMBINE
                 // For terrain (Opaque), we multiply color directly
-                fixed4 pingColor = _SonarBaseColor * h * pattern;
+                // fixed4 pingColor = _SonarBaseColor * h * pattern;
+
+                // Calculate normalized height factor (t)
+                float t = saturate((input.worldPos.y - _MinY) / (_MaxY - _MinY));
+                
+                // Interpolate between low and high colors
+                float4 gradientColor = lerp(_ColorLow, _ColorHigh, t);
+                
+                // Calculate final ping color:
+                fixed4 pingColor = gradientColor * h * pattern;
                 
                 // --- IMPROVED VISIBILITY LOGIC (Clay Render) ---
                 if (_SceneViewVisibility > 0) {

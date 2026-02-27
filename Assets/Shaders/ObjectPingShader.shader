@@ -32,6 +32,10 @@ Shader "Custom/ObjectPingShader" {
             uniform float _SonarGridScale;
             uniform float _SonarDotSize;
             uniform float _SceneViewVisibility; // Added for Scene View visibility
+            uniform float4 _ColorLow;
+            uniform float4 _ColorHigh;
+            uniform float _MinY;
+            uniform float _MaxY;
 
             // --- ARRAYS ---
             uniform int _PointCount;
@@ -66,7 +70,7 @@ Shader "Custom/ObjectPingShader" {
 
                         // Use pow() to push the darkness further out from the center,
                         // making the ring thinner and sharper at the edge.
-                        float val = source.w * pow(hollowNormalized, _SonarFadeStrength);
+                        float val = source.w * pow(hollowNormalized, _SonarFadeStrength * 2);
                         
                         h = max(h, val);
                     }
@@ -82,7 +86,15 @@ Shader "Custom/ObjectPingShader" {
                 // render black instead of transparent when 'h' is 0
                 // - If 'h' is 0 (no ping) or 'pattern' is 0 (grid line), the Math makes it Black.
                 // - But it remains a SOLID PIXEL that writes to Depth.
-                fixed4 finalColor = _SonarBaseColor * h * pattern;
+                
+                // Calculate normalized height factor (t)
+                float t = saturate((input.worldPos.y - _MinY) / (_MaxY - _MinY));
+                
+                // Interpolate between low and high colors
+                float4 gradientColor = lerp(_ColorLow, _ColorHigh, t);
+
+                // Color calulation:
+                fixed4 finalColor = gradientColor * h * pattern; 
                 
                 // Ensure Alpha is 1.0 so it is treated as a solid object
                 finalColor.a = 1.0;

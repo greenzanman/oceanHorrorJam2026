@@ -25,6 +25,12 @@ public class SonarManager : MonoBehaviour
     [Tooltip("Higher = Smaller Dots")] public float gridScale = 50.0f; 
     [Range(0.01f, 0.99f)] public float dotSize = 0.5f;
 
+    [Header("Altitude Gradient")]
+    public Color colorLow = Color.blue;
+    public Color colorHigh = Color.red;
+    public Transform lowestPoint;
+    public Transform highestPoint;
+
     [Header("Audio")]
     private bool _was50Ready = false;
     private bool _was100Ready = false;
@@ -129,11 +135,21 @@ public class SonarManager : MonoBehaviour
 
     void UpdateVisualData()
     {
-        // This makes sure the shader is never Black/Invisible
+        // Existing parameters
         Shader.SetGlobalColor("_SonarBaseColor", scannerColor);
         Shader.SetGlobalFloat("_SonarFadeStrength", fadeStrength);
         Shader.SetGlobalFloat("_SonarGridScale", gridScale);
         Shader.SetGlobalFloat("_SonarDotSize", dotSize);
+
+        // New gradient parameters
+        Shader.SetGlobalColor("_ColorLow", colorLow);
+        Shader.SetGlobalColor("_ColorHigh", colorHigh);
+        
+        if (lowestPoint != null && highestPoint != null)
+        {
+            Shader.SetGlobalFloat("_MinY", lowestPoint.position.y);
+            Shader.SetGlobalFloat("_MaxY", highestPoint.position.y);
+        }
     }
 
     void HandleEnergy()

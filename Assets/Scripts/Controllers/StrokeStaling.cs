@@ -84,7 +84,7 @@ public class StrokeStaling : MonoBehaviour
         else
         {
             // Ensure momentum stays at 0 when we are fully fresh
-            currentRecoveryVelocity = 0f;
+            currentRecoveryVelocity = 1f;
         }
     }
 
