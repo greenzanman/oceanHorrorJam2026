@@ -152,6 +152,7 @@ public class StrokeStaling : MonoBehaviour
         if (currentStaleMultiplier < minStaleThreshold) currentStaleMultiplier = minStaleThreshold;
         
         // KILL THE MOMENTUM so the acceleration has to build up from zero again
+        // - actually nvm retain a slight bit of momentum to incentivize unstaled
         currentRecoveryVelocity = currentRecoveryVelocity * 0.2f;
     }
 
