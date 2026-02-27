@@ -19,6 +19,16 @@ public class GameOverManager : MonoBehaviour
     public Button redoButton;
     public CanvasGroup redoButtonGroup;
     public Button invisibleAdvanceButton; 
+
+    [Header("Animation Curves")]
+    [Tooltip("How the screen fades to black (0 to 1 over time)")]
+    public AnimationCurve fadeToBlackCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    
+    [Tooltip("How the screen snaps to red (Make this an exponential ease-in curve!)")]
+    public AnimationCurve redSnapCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    
+    [Tooltip("How the heart monitor slides across the screen")]
+    public AnimationCurve monitorSlideCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     
     [Header("Text References")]
     public TextMeshProUGUI redText;
@@ -27,8 +37,6 @@ public class GameOverManager : MonoBehaviour
 
     [Header("Audio Events")]
     public EventReference hypnoticBellEvent;
-    public EventReference roarEvent;
-    public EventReference radioCrackleEvent;
     public EventReference flatlineBeepEvent;
     public EventReference uiErrorEvent;
     public EventReference uiSuccessJingleEvent;
@@ -106,51 +114,84 @@ public class GameOverManager : MonoBehaviour
         // Phase 1: Fade to Black & Hypnotic Bell
         if (!hypnoticBellEvent.IsNull) RuntimeManager.PlayOneShot(hypnoticBellEvent);
         screenFadeImage.color = Color.black;
-        yield return FadeCanvasGroup(screenFadeGroup, 0f, 1f, 0.4f);
+        // Pass the curve into our helper function!
+        yield return FadeCanvasGroup(screenFadeGroup, 0f, 1f, 0.4f, fadeToBlackCurve);
 
         // Phase 2: Fade to Red & Roar
         yield return new WaitForSeconds(1f); 
         screenFadeImage.color = new Color(0.3f, 0f, 0f); 
-        if (!roarEvent.IsNull) RuntimeManager.PlayOneShot(roarEvent);
         
+        // Use the serialized redSnapCurve
         float t = 0;
         while (t < 0.2f)
         {
             t += Time.deltaTime;
-            screenFadeGroup.alpha = Mathf.Pow(t / 0.2f, 2f); 
+            float normalizedTime = t / 0.2f;
+            screenFadeGroup.alpha = redSnapCurve.Evaluate(normalizedTime); 
             yield return null;
         }
+        screenFadeGroup.alpha = redSnapCurve.Evaluate(1f); // Ensure it caps exactly at the end
 
         // Phase 3: Radio Cutoff
-        if (!radioCrackleEvent.IsNull) RuntimeManager.PlayOneShot(radioCrackleEvent);
         screenFadeImage.color = Color.black;
-        yield return FadeCanvasGroup(screenFadeGroup, 1f, 1f, 1f); 
+        // (Assuming you want a standard linear/ease out for this one)
+        yield return FadeCanvasGroup(screenFadeGroup, 1f, 1f, 1f, AnimationCurve.Linear(0,1,1,1)); 
 
         // Phase 4: Heart Monitor Slide
-        heartMonitorGroup.alpha = 1f;
-        FMOD.Studio.EventInstance flatline = RuntimeManager.CreateInstance(flatlineBeepEvent);
-        flatline.start();
+        if (!flatlineBeepEvent.IsNull) RuntimeManager.PlayOneShot(flatlineBeepEvent);
 
-        Vector2 startPos = new Vector2(Screen.width, heartMonitorLine.anchoredPosition.y);
-        Vector2 endPos = new Vector2(0, heartMonitorLine.anchoredPosition.y);
+        // 1. Setup Positions
+        // Use localScale to ensure it works even if the image is scaled up
+        float imageWidth = heartMonitorLine.rect.width * heartMonitorLine.localScale.x;
         
+        // Start: Left edge aligned to Screen Left (Pos X = 0)
+        Vector2 startPos = new Vector2(0, heartMonitorLine.anchoredPosition.y);
+        // End: Right edge aligned to Screen Left (Pos X = -Width)
+        Vector2 endPos = new Vector2(-imageWidth, heartMonitorLine.anchoredPosition.y);
+
+        // 2. Initial State
+        heartMonitorGroup.alpha = 0f;
+        heartMonitorLine.anchoredPosition = startPos;
+
+        // 3. Start the Fade In and Slide in parallel
+        // We use StartCoroutine here so the code continues immediately to the slide loop
+        StartCoroutine(FadeCanvasGroup(heartMonitorGroup, 0f, 1f, 0.5f, AnimationCurve.EaseInOut(0,0,1,1)));
+
+        float slideDuration = 2.5f; 
+        float fadeOutStartTime = 1.8f; // Start fading out before the slide finishes
+        bool hasTriggeredFadeOut = false;
         t = 0;
-        while (t < 2f) 
+
+        while (t < slideDuration)
         {
             t += Time.deltaTime;
-            heartMonitorLine.anchoredPosition = Vector2.Lerp(startPos, endPos, t / 2f);
+            float normalizedTime = t / slideDuration;
+            
+            // Apply the serializable curve to the slide movement
+            float curvePercent = monitorSlideCurve.Evaluate(normalizedTime);
+            heartMonitorLine.anchoredPosition = Vector2.LerpUnclamped(startPos, endPos, curvePercent);
+
+            // 4. Trigger Fade Out Coroutine "as it's nearing the end"
+            if (t >= fadeOutStartTime && !hasTriggeredFadeOut)
+            {
+                hasTriggeredFadeOut = true;
+                StartCoroutine(FadeCanvasGroup(heartMonitorGroup, 1f, 0f, 0.7f, AnimationCurve.EaseInOut(0,1,1,0)));
+            }
+
             yield return null;
         }
 
-        flatline.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        flatline.release();
-        yield return FadeCanvasGroup(heartMonitorGroup, 1f, 0f, 1f);
+        // Ensure it finishes at the exact end position
+        heartMonitorLine.anchoredPosition = endPos;
+
+        // Wait for the fade-out coroutine to actually finish before moving to Phase 5
+        yield return new WaitForSeconds(0.7f); 
+
 
         // Phase 5: Show REDO Button
         redoButton.gameObject.SetActive(true);
-        yield return FadeCanvasGroup(redoButtonGroup, 0f, 1f, 2f);
+        yield return FadeCanvasGroup(redoButtonGroup, 0f, 1f, 2f, AnimationCurve.EaseInOut(0,0,1,1));
         
-        // Update state so Any Button works
         _currentState = SequenceState.WaitingForFirstRedo; 
     }
 
@@ -270,13 +311,16 @@ public class GameOverManager : MonoBehaviour
         if (_idlePhase == 1) yellowText.text = "...";
     }
 
-    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration)
+    private IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration, AnimationCurve curve)
     {
         float t = 0;
         while (t < duration)
         {
             t += Time.deltaTime;
-            cg.alpha = Mathf.Lerp(start, end, t / duration);
+            float normalizedTime = t / duration;
+            // Get the curve multiplier (0 to 1) and Lerp based on that
+            float curveValue = curve.Evaluate(normalizedTime);
+            cg.alpha = Mathf.LerpUnclamped(start, end, curveValue);
             yield return null;
         }
         cg.alpha = end;
