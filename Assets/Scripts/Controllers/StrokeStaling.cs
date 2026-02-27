@@ -84,7 +84,7 @@ public class StrokeStaling : MonoBehaviour
         else
         {
             // Ensure momentum stays at 0 when we are fully fresh
-            currentRecoveryVelocity = 1f;
+            currentRecoveryVelocity = 0f;
         }
     }
 
@@ -152,7 +152,7 @@ public class StrokeStaling : MonoBehaviour
         if (currentStaleMultiplier < minStaleThreshold) currentStaleMultiplier = minStaleThreshold;
         
         // KILL THE MOMENTUM so the acceleration has to build up from zero again
-        currentRecoveryVelocity = 0f;
+        currentRecoveryVelocity = currentRecoveryVelocity * 0.2f;
     }
 
     private IEnumerator ApplyVerticalCurveRoutine(float staleAtTimeOfStart)
