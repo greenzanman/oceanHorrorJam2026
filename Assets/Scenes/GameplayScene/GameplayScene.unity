@@ -1119,6 +1119,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &890244849 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4754723892817081318, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+  m_PrefabInstance: {fileID: 7900828788595140028}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890244835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37d63d8923c78a58bbd401ac8f4280cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &890244854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 890244835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8cf56d3e89efa54b8522cc5f792fcd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  input: {fileID: 890244845}
+  movement: {fileID: 890244849}
+  fireSystem: {fileID: 890244836}
+  energy: {fileID: 890244840}
+  playerCamera: {fileID: 2109463547}
 --- !u!1001 &940829135
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2067,9 +2095,149 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2230753904769447505, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2230753904769447505, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: testMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: playerSystems
+      value: 
+      objectReference: {fileID: 890244854}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: roarEvent.Path
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: roarEvent.Guid.Data1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: roarEvent.Guid.Data2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: roarEvent.Guid.Data3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: roarEvent.Guid.Data4
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: flatlineBeepEvent.Path
+      value: event:/ui/ui gameover flatlining
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: hypnoticBellEvent.Path
+      value: event:/ui/ui gameover
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: radioCrackleEvent.Path
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: uiSuccessJingleEvent.Path
+      value: event:/ui/ui success jingle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: flatlineBeepEvent.Guid.Data1
+      value: 580633899
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: flatlineBeepEvent.Guid.Data2
+      value: 1208660965
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: flatlineBeepEvent.Guid.Data3
+      value: -382421569
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: flatlineBeepEvent.Guid.Data4
+      value: -1952320754
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: hypnoticBellEvent.Guid.Data1
+      value: 470861199
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: hypnoticBellEvent.Guid.Data2
+      value: 1276349854
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: hypnoticBellEvent.Guid.Data3
+      value: 1823152030
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: hypnoticBellEvent.Guid.Data4
+      value: -1340714179
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: radioCrackleEvent.Guid.Data1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: radioCrackleEvent.Guid.Data2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: radioCrackleEvent.Guid.Data3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: radioCrackleEvent.Guid.Data4
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: uiSuccessJingleEvent.Guid.Data1
+      value: -637969061
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: uiSuccessJingleEvent.Guid.Data2
+      value: 1293821789
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: uiSuccessJingleEvent.Guid.Data3
+      value: -579161472
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: uiSuccessJingleEvent.Guid.Data4
+      value: 954241424
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: redSnapCurve.m_Curve.Array.data[1].time
+      value: 1.001831
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: redSnapCurve.m_Curve.Array.data[1].inSlope
+      value: 2.5819812
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: redSnapCurve.m_Curve.Array.data[1].inWeight
+      value: 0.032792903
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: redSnapCurve.m_Curve.Array.data[1].outSlope
+      value: 2.5819812
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: monitorSlideCurve.m_Curve.Array.data[0].inSlope
+      value: 2.0750368
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: monitorSlideCurve.m_Curve.Array.data[0].outSlope
+      value: 2.0750368
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656040293083206457, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
+      propertyPath: monitorSlideCurve.m_Curve.Array.data[0].outWeight
+      value: 0.10401459
       objectReference: {fileID: 0}
     - target: {fileID: 4916943643464038873, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
       propertyPath: strokeStaling
@@ -3308,6 +3476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62220bb8ce1050d4c85088b1365ca6c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSystems: {fileID: 890244854}
   skipIntro: 1
   blackScreen: {fileID: 839213983}
   playerInput: {fileID: 890244845}
@@ -3409,6 +3578,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4794819130898509062, guid: 67aa02385f073a344a01034b4a281949, type: 3}
   m_PrefabInstance: {fileID: 7900828788595140028}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2109463547 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 843331498906459801, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+  m_PrefabInstance: {fileID: 7900828788595140028}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a6f50ac334539e1c864d603f1758201, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &808919335312044929
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3657,7 +3837,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8865794764721922672, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 890244854}
   m_SourcePrefab: {fileID: 100100000, guid: 67aa02385f073a344a01034b4a281949, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
