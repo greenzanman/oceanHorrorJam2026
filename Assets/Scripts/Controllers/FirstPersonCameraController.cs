@@ -62,4 +62,11 @@ public class FirstPersonCameraController : MonoBehaviour
             playerRb.MoveRotation(targetBodyRotation);
         }
     }
+
+    void OnDisable()
+    {
+        // Reset velocities so it doesn't 'drift' if re-enabled later
+        xRotationVelocity = 0;
+        yRotationVelocity = 0;
+    }
 }

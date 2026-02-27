@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 public class ElevatorIntroManager : MonoBehaviour
 {
+    [Header("External References")]
+    public PlayerSystemsManager playerSystems;
+    
     [Header("Debug / Testing")]
     [SerializeField] private bool skipIntro = false;
 
@@ -33,8 +36,7 @@ public class ElevatorIntroManager : MonoBehaviour
         {
             // Instantly clear screen and restore control
             blackScreen.gameObject.SetActive(false);
-            if (playerInput != null) playerInput.enabled = true;
-
+            if (playerSystems != null) playerSystems.SetAllSystems(true);
             // Instantly open doors
             if (doorAnimator != null) doorAnimator.SetTrigger("Open");
             
@@ -52,7 +54,7 @@ public class ElevatorIntroManager : MonoBehaviour
         // ==========================================
         // 0 SECONDS: PITCH BLACK & NO CONTROL
         // ==========================================
-        if (playerInput != null) playerInput.enabled = false;
+        if (playerSystems != null) playerSystems.SetAllSystems(false);
         
         Color screenColor = blackScreen.color;
         screenColor.a = 1f; // 100% Black
@@ -68,7 +70,7 @@ public class ElevatorIntroManager : MonoBehaviour
         // ==========================================
         // 6 SECONDS: RESTORE CONTROL & START FADE
         // ==========================================
-        if (playerInput != null) playerInput.enabled = true;
+        if (playerSystems != null) playerSystems.SetAllSystems(true);
         
         // Turn off raycast blocking so the player can interact while it fades
         blackScreen.raycastTarget = false; 

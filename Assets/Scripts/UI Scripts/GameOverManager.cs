@@ -8,6 +8,9 @@ using TMPro;
 
 public class GameOverManager : MonoBehaviour
 {
+    [Header("External References")]
+    public PlayerSystemsManager playerSystems;
+
     [Header("Debug / Testing")]
     public bool testMode = false; // Check this in inspector to auto-play!
     
@@ -88,6 +91,13 @@ public class GameOverManager : MonoBehaviour
 
     public void StartGameOverSequence()
     {
+        // 1. KILL PLAYER CONTROLS IMMEDIATELY
+        if (playerSystems != null)
+        {
+            playerSystems.SetAllSystems(false);
+        }
+
+        // 2. Start the animation
         _currentState = SequenceState.PlayingAnimation;
         StartCoroutine(GameOverRoutine());
     }
@@ -155,7 +165,7 @@ public class GameOverManager : MonoBehaviour
 
         // 3. Start the Fade In and Slide in parallel
         // We use StartCoroutine here so the code continues immediately to the slide loop
-        StartCoroutine(FadeCanvasGroup(heartMonitorGroup, 0f, 1f, 0.5f, AnimationCurve.EaseInOut(0,0,1,1)));
+        StartCoroutine(FadeCanvasGroup(heartMonitorGroup, 0f, 1f, 0.25f, AnimationCurve.EaseInOut(0,0,1,1)));
 
         float slideDuration = 2.5f; 
         float fadeOutStartTime = 1.8f; // Start fading out before the slide finishes
@@ -186,6 +196,9 @@ public class GameOverManager : MonoBehaviour
 
         // Wait for the fade-out coroutine to actually finish before moving to Phase 5
         yield return new WaitForSeconds(0.7f); 
+
+        // extra pause b4 redo 
+        yield return new WaitForSeconds(2f); 
 
 
         // Phase 5: Show REDO Button
@@ -228,19 +241,20 @@ public class GameOverManager : MonoBehaviour
         yield return StartCoroutine(TypeDialogue(redText, "{p}..."));
         yield return WaitForClick();
 
-        yield return StartCoroutine(TypeDialogue(yellowText, "wait. but this is a guy{p} who socked his 6'1 mother{p} in the nose{p}{p}\nand then BRAGGED about it —{p} <i>you know the type</i>..."));
+        yield return StartCoroutine(TypeDialogue(yellowText, "wait waitwait-{p} remember,{p} this is the guy{p} who socked his 6'1 mother{p} in the nose{p}{p}\n\nand then BRAGGED about it —{p} are u sure abt this..?"));
         yield return WaitForClick();
 
         yield return StartCoroutine(TypeDialogue(redText, "{p}.{p}.{p}.{p}"));
         yield return WaitForClick();
 
-        yield return StartCoroutine(TypeDialogue(yellowText, "{p}and remember...{p}{p}{p} u have ur thingg{p}g{p}g tonight  ;—)"));
+        yield return StartCoroutine(TypeDialogue(yellowText, "{p}and also...{p}{p}{p} dontcha have ur thing{p}g{p}g{p}g tonight?  ;—)"));
         yield return WaitForClick();
 
-        yield return StartCoroutine(TypeDialogue(redText, "TRUE.{p} I WOULD PREFER TO CLOCK OUT SOON;{p} ME AND THE FLOWER HAVE PLANS TO PLAY BACKGAMMON TONIGHT."));
+        yield return StartCoroutine(TypeDialogue(redText, "TRUE.{p} I{p} WOULD PREFER TO CLOCK OUT SOON;{p}{p}"));
+        yield return StartCoroutine(TypeDialogue(redText, "\n\n ME AND THE FLOWER HAVE PLANS TO PLAY BACKGAMMON TONIGHT.", true)); 
         yield return WaitForClick();
 
-        yield return StartCoroutine(TypeDialogue(yellowText, "sick.{p}{p}{p} well this guy is def gonna just right up and die anyways -{p}{p} i mean,{p}{p} he only made it <b>halfway down</b>.{p}{p} sooo don't worry abt it"));
+        yield return StartCoroutine(TypeDialogue(yellowText, "sick.{p}{p}{p} well this guy is def gonna just die again anyways -{p}{p} i mean,{p}{p} he only made it <b>halfway down</b>.{p}{p}\n\n sooo don't worry abt it"));
         yield return WaitForClick();
 
         yield return StartCoroutine(TypeDialogue(redText, "THANKS.{p} WOULD YOU MIND LETTING NIGHT SHIFT KNOW,{p} WHEN THEY ARRIVE."));
@@ -304,7 +318,13 @@ public class GameOverManager : MonoBehaviour
 
     private IEnumerator IdleChatterRoutine()
     {
-        yield return new WaitForSeconds(8f);
+        yield return new WaitForSeconds(5f);
+        if (_idlePhase == 1) yellowText.text = "...";
+        yield return StartCoroutine(TypeDialogue(yellowText, "dammit..."));
+        yield return new WaitForSeconds(2f);
+        if (_idlePhase == 1) yellowText.text = "...";
+
+        yield return new WaitForSeconds(5f);
         if (_idlePhase == 1) yellowText.text = "um. you can press it now, y'know.";
 
         yield return new WaitForSeconds(5f); 
