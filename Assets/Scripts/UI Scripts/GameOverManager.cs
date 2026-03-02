@@ -15,6 +15,7 @@ public class GameOverManager : MonoBehaviour
     public bool testMode = false; // Check this in inspector to auto-play!
     
     [Header("UI References")]
+    public GameObject gameOverCanvas;
     public CanvasGroup screenFadeGroup;
     public Image screenFadeImage;
     public RectTransform heartMonitorLine;
@@ -79,6 +80,9 @@ public class GameOverManager : MonoBehaviour
         redText.text = "";
         yellowText.text = "";
 
+        // ensure gameover ui hidden at start
+        if (gameOverCanvas != null) gameOverCanvas.SetActive(false);
+
         redoButton.onClick.AddListener(OnRedoClicked);
         invisibleAdvanceButton.onClick.AddListener(OnAdvanceDialogueClicked);
 
@@ -91,6 +95,9 @@ public class GameOverManager : MonoBehaviour
 
     public void StartGameOverSequence()
     {
+        // 0. show game over ui
+        if (gameOverCanvas != null) gameOverCanvas.SetActive(true);
+        
         // 1. KILL PLAYER CONTROLS IMMEDIATELY
         if (playerSystems != null)
         {
