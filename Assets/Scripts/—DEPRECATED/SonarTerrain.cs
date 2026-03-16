@@ -14,6 +14,8 @@ public class SonarTerrain : MonoBehaviour {
 
     private const int MAX_PINGS = 16;
     private const float FADE_SPEED = 0.5f; 
+    private float[] agesArray = new float[16];
+    private float[] lifespansArray = new float[16];
     
     private Material terrainMat;
     private Terrain terrain;
@@ -27,6 +29,9 @@ public class SonarTerrain : MonoBehaviour {
         for(int i=0; i<MAX_PINGS; i++) {
             positionsArray[i] = Vector4.zero;
             radiiArray[i] = 0f;
+            agesArray[i] = 0f;
+            lifespansArray[i] = 1f;
+
         }
         
         terrainMat.SetInteger("_PointCount", MAX_PINGS);
@@ -43,11 +48,14 @@ public class SonarTerrain : MonoBehaviour {
             int id = kvp.Key;
             int index = kvp.Value;
 
-            // Decay Intensity (stored in W)
-            float currentIntensity = positionsArray[index].w;
-            currentIntensity -= Time.deltaTime * FADE_SPEED;
+            // Increment age
+            agesArray[index] += Time.deltaTime;
 
-            if (currentIntensity <= 0) {
+            // Normalize age and evaluate curve
+            float normalizedAge = agesArray[index] / lifespansArray[index];
+            float currentIntensity = SonarManager.Instance.fadeCurve.Evaluate(normalizedAge);
+
+            if (currentIntensity <= 0 || normalizedAge >= 1f) {
                 currentIntensity = 0;
                 idsToRemove.Add(id);
             }
@@ -68,7 +76,7 @@ public class SonarTerrain : MonoBehaviour {
         }
     }
 
-    public void HandlePing(Vector3 worldPos, float radius, int pingId) {
+    public void HandlePing(Vector3 worldPos, float radius, int pingId, float lifespan) {
         
         int index = -1;
 
@@ -90,8 +98,9 @@ public class SonarTerrain : MonoBehaviour {
         }
 
         if (index != -1) {
-            // Send World Position directly
-            positionsArray[index] = new Vector4(worldPos.x, worldPos.y, worldPos.z, 1.0f); // 1.0 = Start Intensity
+            agesArray[index] = 0f; // Reset age for new ping
+            lifespansArray[index] = lifespan;
+            positionsArray[index] = new Vector4(worldPos.x, worldPos.y, worldPos.z, SonarManager.Instance.fadeCurve.Evaluate(0)); 
             radiiArray[index] = radius;
             isDirty = true;
             UpdateShader();
