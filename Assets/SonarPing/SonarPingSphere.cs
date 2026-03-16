@@ -47,12 +47,14 @@ public class SonarPingSphere : MonoBehaviour
         float standardLifespan = maxRange / speed; 
         float totalLifespan = standardLifespan * fadeMultiplier; // Apply the linger!
         
-        CurrentIntensity = 1.0f - (age / totalLifespan);
+        // 3. Normalize age (0 to 1) and evaluate the curve
+        float normalizedAge = Mathf.Clamp01(age / totalLifespan);
+        CurrentIntensity = SonarManager.Instance.fadeCurve.Evaluate(normalizedAge);
 
-        // 3. Physical Scale
+        // 4. Physical Scale
         transform.localScale = Vector3.one * CurrentRadius * 2; 
 
-        // 4. Visual Mesh Fade
+        // 5. Visual Mesh Fade
         if (meshRenderer != null)
         {
             Color c = meshRenderer.material.color;
@@ -60,7 +62,7 @@ public class SonarPingSphere : MonoBehaviour
             meshRenderer.material.color = c;
         }
 
-        // 5. Kill ONLY when completely faded out
+        // 6. Kill ONLY when completely faded out
         if (CurrentIntensity <= 0)
         {
             DestroyPing();

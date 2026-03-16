@@ -22,8 +22,10 @@ public class SonarManager : MonoBehaviour
     [Header("3. Visuals (Colors & Grid)")]
     public Color scannerColor = Color.red;
     [Range(0.1f, 5f)] public float fadeStrength = 1.0f;
+    [SerializeField] public AnimationCurve fadeCurve = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0));
     [Tooltip("Higher = Smaller Dots")] public float gridScale = 50.0f; 
     [Range(0.01f, 0.99f)] public float dotSize = 0.5f;
+
 
     [Header("Altitude Gradient")]
     public Color colorLow = Color.blue;

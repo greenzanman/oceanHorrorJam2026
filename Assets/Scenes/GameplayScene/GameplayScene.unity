@@ -251,7 +251,6 @@ GameObject:
   - component: {fileID: 447021498}
   - component: {fileID: 447021497}
   - component: {fileID: 447021496}
-  - component: {fileID: 447021499}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -334,18 +333,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1615584895}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &447021499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 447021495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15d6568ef62e3514db507e273ed776a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &450070438 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2230753904769447505, guid: 906fa773b686b3947bdf14b5734f11ea, type: 3}
@@ -4168,7 +4155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 8.1, y: 0}
+  m_AnchoredPosition: {x: 8.099976, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031450572
@@ -4746,9 +4733,53 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 74582206}
     - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeStrength
+      value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: highestPoint
       value: 
       objectReference: {fileID: 504101660}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: pingsPerFire
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: currentEnergy
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].time
+      value: 0.7224385
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[2].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].value
+      value: 0.706876
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].inSlope
+      value: -1.368989
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].outSlope
+      value: -1.368989
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: fadeCurve.m_Curve.Array.data[1].outWeight
+      value: 0.25051126
+      objectReference: {fileID: 0}
     - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: staleFactor
       value: 0.1
