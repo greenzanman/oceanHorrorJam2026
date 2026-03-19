@@ -5,6 +5,9 @@ using System.Collections; // NEW: Required for Coroutines!
 
 public class StalkerEnemy : MonoBehaviour
 {
+    [Header("Enemy Marker Prototype")]
+    public GameObject enemyMarkerPrefab;
+
     [Header("Core State")]
     [Range(0, 100)] public float panicIntensity = 0f;
     public bool isStalking = false;
@@ -84,16 +87,18 @@ public class StalkerEnemy : MonoBehaviour
 
     void Update()
     {
+        // Now we check for pings continuously, regardless of state
+        CheckForPings(); 
+
         if (!isStalking)
         {
-            CheckForActivationPing();
             return;
         }
 
         ProcessStalkingMechanics();
     }
 
-    private void CheckForActivationPing()
+    private void CheckForPings()
     {
         if (SonarManager.Instance == null) return;
 
@@ -106,8 +111,18 @@ public class StalkerEnemy : MonoBehaviour
             if (ping.CurrentRadius >= distanceToPing)
             {
                 _processedPings.Add(ping);
-                TriggerInitialSpawn();
-                break;
+                
+                if (!isStalking)
+                {
+                    TriggerInitialSpawn();
+                }
+                else if (enemyMarkerPrefab != null)
+                {
+                    // Spawn the marker right where the predator is standing
+                    Instantiate(enemyMarkerPrefab, transform.position, Quaternion.identity);
+                }
+                
+                break; 
             }
         }
     }

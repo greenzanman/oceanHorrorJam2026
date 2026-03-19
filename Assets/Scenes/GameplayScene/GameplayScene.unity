@@ -2995,6 +2995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc7fb7463f2b5244b9392ce58576061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyMarkerPrefab: {fileID: 5006975360330438398, guid: 9e041e1e6b12f9a4f83eb0adf276b19d, type: 3}
   panicIntensity: 0
   isStalking: 0
   maxDistance: 20

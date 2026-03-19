@@ -389,6 +389,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed4b0cabab79fc04eafae7b8e86f4adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  strokeFmodEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   horizontalStrokeForce: 0.2
   verticalDuration: 1.2
   verticalForceMultiplier: 3
@@ -426,8 +433,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   staleFactor: 0
-  recoveryRate: 0.7
   minStaleThreshold: 0
+  recoveryAcceleration: 1.5
+  maxRecoverySpeed: 3
   maxEnergyCost: 60
   minEnergyCost: 2
 --- !u!114 &516172179312979804
@@ -449,10 +457,44 @@ MonoBehaviour:
   burstInterval: 0.2
   scannerColor: {r: 0.24705884, g: 0.003921569, b: 0.003921569, a: 1}
   fadeStrength: 4.13
+  fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   gridScale: 50
   dotSize: 0.5
+  colorLow: {r: 0, g: 0, b: 1, a: 1}
+  colorHigh: {r: 1, g: 0, b: 0, a: 1}
+  lowestPoint: {fileID: 0}
+  highestPoint: {fileID: 0}
   maxEnergy: 100
   safeZoneRechargeRate: 50
+  refillDelay: 0.2
+  emptyRefillDelay: 2
+  sonarCooldown: 0
+  superRangeMultiplier: 2
+  superSpeedMultiplier: 1.5
+  superFadeMultiplier: 3
   maxRegenRate: 20
   minRegenRate: 5
   energyRegenCurve:
