@@ -4250,6 +4250,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: maxRange
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
+      propertyPath: coneAngle
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 516172179312979804, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: colorLow.b
       value: 0.0050765327
       objectReference: {fileID: 0}
@@ -4335,11 +4343,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: maxEnergyCost
-      value: 0
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: minEnergyCost
-      value: 0
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4729858936832060082, guid: 67aa02385f073a344a01034b4a281949, type: 3}
       propertyPath: maxRecoverySpeed
