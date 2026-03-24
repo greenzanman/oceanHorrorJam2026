@@ -5,9 +5,11 @@ using UnityEngine;
 // - the sphere DOES NOT RENDER right now, but helpful for debugging and future visual effects (like a mesh ring or particle burst at the ping origin) 
 public class SonarPingSphere : MonoBehaviour
 {
+    private static MaterialPropertyBlock _propBlock;
     // Public Properties that the SonarManager reads
     public float CurrentRadius { get; private set; }
     public float CurrentIntensity { get; private set; }
+    public Vector3 ForwardDir { get; private set; }
 
     private float maxRange;
     private float speed;
@@ -18,7 +20,7 @@ public class SonarPingSphere : MonoBehaviour
     // get our owwn renderer for the color
     [SerializeField] private Renderer meshRenderer; 
 
-    public void Initialize(float range, float scannerSpeed, float fadeMult = 1f)
+    public void Initialize(float range, float scannerSpeed, Vector3 direction, float fadeMult = 1f)
     {
         this.maxRange = range;
         this.speed = scannerSpeed;
@@ -26,6 +28,23 @@ public class SonarPingSphere : MonoBehaviour
         this.age = 0;
         this.CurrentRadius = 0;
         this.CurrentIntensity = 1;
+        this.ForwardDir = direction.normalized;
+
+        if (meshRenderer != null)
+        {
+            if (_propBlock == null) 
+            {
+                _propBlock = new MaterialPropertyBlock();
+            }
+
+            // Get current block, modify it, and apply it back
+            meshRenderer.GetPropertyBlock(_propBlock);
+            
+            float cosAngle = Mathf.Cos((SonarManager.Instance.coneAngle * 0.5f) * Mathf.Deg2Rad);
+            _propBlock.SetVector("_PingDirectionInfo", new Vector4(ForwardDir.x, ForwardDir.y, ForwardDir.z, cosAngle));
+            
+            meshRenderer.SetPropertyBlock(_propBlock);
+        }
         
         isInitialized = true;
 

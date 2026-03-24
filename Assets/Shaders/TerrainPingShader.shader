@@ -34,6 +34,12 @@ Shader "Custom/TerrainPingShader" {
             uniform float4 _ColorHigh;
             uniform float _MinY;
             uniform float _MaxY;
+            
+            // --- CONE GLOBALS ---
+            uniform float4 _PingDirections[16];
+            uniform float _WedgeFeather; 
+            uniform float _MinOmniRadius;
+
 
             // Arrays
             uniform int _PointCount;
@@ -57,27 +63,49 @@ Shader "Custom/TerrainPingShader" {
                     float radius = _Radii[i];
                     if (source.w <= 0 || radius <= 0.1) continue;
 
+                    float3 pingCenter = source.xyz;
+                    float3 offset = input.worldPos - pingCenter;
+                    
+                    // --- WEDGE & OMNI CULLING ---
+                    // 1. Calculate horizontal-only direction
+                    float2 flatDirToPixel = normalize(offset.xz);
+                    float2 flatForward = normalize(_PingDirections[i].xz);
+
+                    // 2. Horizontal Dot Product
+                    float dotProduct = dot(flatDirToPixel, flatForward);
+
+                    // 3. Smoothstep feathering
+                    float wedgeMask = smoothstep(_PingDirections[i].w - _WedgeFeather, _PingDirections[i].w + _WedgeFeather, dotProduct);
+
+                    // 4. Distance bypass for close-up omnidirectional ping
+                    float distToCenter = length(offset);
+                    float omniMask = 1.0 - smoothstep(_MinOmniRadius - 1.0, _MinOmniRadius, distToCenter);
+
+                    // 5. Combine masks
+                    float finalVisibility = max(wedgeMask, omniMask);
+
+                    if (finalVisibility <= 0) continue; // Skip rendering if outside visible cone area
+
+                    // --- DISTANCE CULLING ---
                     float dist = distance(input.worldPos.xz, source.xz);
 
                     // We only draw inside the circle
                     if (dist < radius) {
-                        
-                        // OLD MATH (Solid Circle):
-                        // float falloff = 1.0 - (dist / radius); 
-                        // Result: Center is Bright (1), Edge is Dark (0)
-
-                        // NEW MATH (Hollow Ring):
+                        // (Hollow Ring):
                         // We want the edge (dist ~ radius) to be 1.
                         // We want the center (dist ~ 0) to be 0.
                         float hollowNormalized = dist / radius;
 
                         // We use 'pow' to make the ring thinner. 
                         // Higher power = Thinner ring at the edge.
-                        // We multiply by _SonarFadeStrength * 4 to give you more control.
+                        // We multiply by _SonarFadeStrength * 2 to give you more control.
                         float ringEdge = pow(hollowNormalized, _SonarFadeStrength * 2);
                         
                         // Multiply by global intensity (source.w) so it still fades over time
                         float val = source.w * ringEdge;
+                        
+                        // Apply the visibility mask to the final intensity value
+                        val *= finalVisibility; 
                         
                         h = max(h, val);
                     }

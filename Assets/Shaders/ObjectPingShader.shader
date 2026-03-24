@@ -36,6 +36,11 @@ Shader "Custom/ObjectPingShader" {
             uniform float4 _ColorHigh;
             uniform float _MinY;
             uniform float _MaxY;
+            
+            // --- CONE GLOBALS ---
+            uniform float4 _PingDirections[16];
+            uniform float _WedgeFeather; 
+            uniform float _MinOmniRadius;
 
             // --- ARRAYS ---
             uniform int _PointCount;
@@ -60,6 +65,30 @@ Shader "Custom/ObjectPingShader" {
 
                     if (source.w <= 0 || radius <= 0.1) continue;
 
+                    float3 pingCenter = source.xyz;
+                    float3 offset = input.worldPos - pingCenter;
+                    
+                    // --- WEDGE & OMNI CULLING ---
+                    // 1. Calculate horizontal-only direction
+                    float2 flatDirToPixel = normalize(offset.xz);
+                    float2 flatForward = normalize(_PingDirections[i].xz);
+
+                    // 2. Horizontal Dot Product
+                    float dotProduct = dot(flatDirToPixel, flatForward);
+
+                    // 3. Smoothstep feathering
+                    float wedgeMask = smoothstep(_PingDirections[i].w - _WedgeFeather, _PingDirections[i].w + _WedgeFeather, dotProduct);
+
+                    // 4. Distance bypass for close-up omnidirectional ping
+                    float distToCenter = length(offset);
+                    float omniMask = 1.0 - smoothstep(_MinOmniRadius - 1.0, _MinOmniRadius, distToCenter);
+
+                    // 5. Combine masks
+                    float finalVisibility = max(wedgeMask, omniMask);
+
+                    if (finalVisibility <= 0) continue; // Skip rendering if outside visible cone area
+
+                    // --- DISTANCE CULLING ---
                     float dist = distance(input.worldPos.xz, source.xz);
 
                     if (dist < radius) {
@@ -71,6 +100,9 @@ Shader "Custom/ObjectPingShader" {
                         // Use pow() to push the darkness further out from the center,
                         // making the ring thinner and sharper at the edge.
                         float val = source.w * pow(hollowNormalized, _SonarFadeStrength * 2);
+                        
+                        // Apply the visibility mask to the final intensity value
+                        val *= finalVisibility; 
                         
                         h = max(h, val);
                     }

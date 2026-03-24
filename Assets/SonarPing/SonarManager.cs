@@ -19,6 +19,13 @@ public class SonarManager : MonoBehaviour
     public int pingsPerFire = 1;
     public float burstInterval = 0.2f;
 
+    [Header("Cone Settings")]
+    [Range(10f, 360f)] public float coneAngle = 45f;
+    [Range(0.01f, 0.5f)] public float wedgeFeather = 0.05f;
+    public float minOmniRadius = 5.0f;
+
+    private Vector4[] _pingDirections = new Vector4[16];
+
     [Header("3. Visuals (Colors & Grid)")]
     public Color scannerColor = Color.red;
     [Range(0.1f, 5f)] public float fadeStrength = 1.0f;
@@ -121,18 +128,26 @@ public class SonarManager : MonoBehaviour
                 sphere.transform.position.z, 
                 sphere.CurrentIntensity 
             );
+
+            float cosAngle = Mathf.Cos((coneAngle * 0.5f) * Mathf.Deg2Rad);
+            _pingDirections[i] = new Vector4(sphere.ForwardDir.x, sphere.ForwardDir.y, sphere.ForwardDir.z, cosAngle);
         }
 
         // Clear empty slots
         for (int i = count; i < 16; i++) {
             _radii[i] = 0;
             _intensities[i] = Vector4.zero;
+            _pingDirections[i] = Vector4.zero;
         }
 
         // Send to GPU
         Shader.SetGlobalInteger("_PointCount", count);
         Shader.SetGlobalFloatArray("_Radii", _radii);
         Shader.SetGlobalVectorArray("_PointIntensities", _intensities);
+        // - cone params
+        Shader.SetGlobalVectorArray("_PingDirections", _pingDirections);
+        Shader.SetGlobalFloat("_WedgeFeather", wedgeFeather);
+        Shader.SetGlobalFloat("_MinOmniRadius", minOmniRadius);
     }
 
     void UpdateVisualData()
@@ -335,7 +350,7 @@ public class SonarManager : MonoBehaviour
             SonarPingSphere sphereScript = go.GetComponent<SonarPingSphere>();
             if (sphereScript != null)
             {
-                sphereScript.Initialize(maxRange * rangeMult, scannerSpeed * speedMult, fadeMult);
+                sphereScript.Initialize(maxRange * rangeMult, scannerSpeed * speedMult, transform.forward, fadeMult);
             }
         }
     }
