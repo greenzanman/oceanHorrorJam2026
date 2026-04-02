@@ -58,6 +58,8 @@ public class SonarManager : MonoBehaviour
     public bool IsSonarReady() { return _sonarCooldownTimer <= 0f; }
 
     [Header("Super Sonar (100% Energy)")]
+    [Tooltip("Enable or disable the super sonar (100% energy) feature.")]
+    public bool enableSuperSonar = false;
     public float superRangeMultiplier = 2.0f;
     public float superSpeedMultiplier = 1.5f;
     public float superFadeMultiplier = 3.0f;
@@ -321,7 +323,7 @@ public class SonarManager : MonoBehaviour
     public void EvaluateStrokeSonar()
     {
         // 1. Check for Super Sonar (100% Energy)
-        if (currentEnergy >= maxEnergy * 0.99f)
+        if (enableSuperSonar && currentEnergy >= maxEnergy * 0.99f)
         {
             // play super sonar sound
             if (audioManager != null) audioManager.PlaySuperSonar();

@@ -102,11 +102,7 @@ public class StrokeStaling : MonoBehaviour
 
     private void ExecuteStroke()
     {
-        // tell sonar manager to evaluate if we should ping on this stroke (50% or 100% energy)
-        if (SonarManager.Instance != null)
-        {
-            SonarManager.Instance.EvaluateStrokeSonar();
-        }
+        // Sonar ping now triggered by Fire input, not Stroke.
 
         // 1 & 2. Get the calculated cost for the next stroke
         float energyCost = GetNextStrokeCost();

@@ -67,7 +67,12 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            // GAMEPLAY: Normal Fire Logic
+            // Trigger sonar ping on Fire
+            if (SonarManager.Instance != null)
+            {
+                SonarManager.Instance.EvaluateStrokeSonar();
+            }
+            // ...other fire logic...
         }
     }
 

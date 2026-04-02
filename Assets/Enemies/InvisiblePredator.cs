@@ -1,10 +1,15 @@
 using UnityEngine;
 using FMODUnity;
 using System.Collections.Generic;
-using System.Collections; // NEW: Required for Coroutines!
+using System.Collections;
 
 public class StalkerEnemy : MonoBehaviour
+
 {
+    // Cooldown for anticipation sound
+    private float anticipationSoundCooldown = 1.5f;
+    private float anticipationSoundTimer = 0f;
+
     [Header("Enemy Marker Prototype")]
     public GameObject enemyMarkerPrefab;
 
@@ -87,8 +92,12 @@ public class StalkerEnemy : MonoBehaviour
 
     void Update()
     {
+        // Update anticipation sound timer
+        if (anticipationSoundTimer > 0f)
+            anticipationSoundTimer -= Time.deltaTime;
+
         // Now we check for pings continuously, regardless of state
-        CheckForPings(); 
+        CheckForPings();
 
         if (!isStalking)
         {
@@ -111,7 +120,24 @@ public class StalkerEnemy : MonoBehaviour
             if (ping.CurrentRadius >= distanceToPing)
             {
                 _processedPings.Add(ping);
-                
+
+                // --- REACTION TO SONAR PING ---
+                if (isStalking)
+                {
+                    // Check if player is looking at the monster (in viewcone)
+                    Vector3 dirToEnemy = (transform.position - _player.position).normalized;
+                    float angle = Vector3.Angle(_player.forward, dirToEnemy);
+                    if (angle <= viewConeAngle)
+                    {
+                        // Play anticipation sound as test, with cooldown
+                        if (!anticipationEvent.IsNull && anticipationSoundTimer <= 0f)
+                        {
+                            FMODUnity.RuntimeManager.PlayOneShot(anticipationEvent, transform.position);
+                            anticipationSoundTimer = anticipationSoundCooldown;
+                        }
+                    }
+                }
+
                 if (!isStalking)
                 {
                     TriggerInitialSpawn();
@@ -121,8 +147,8 @@ public class StalkerEnemy : MonoBehaviour
                     // Spawn the marker right where the predator is standing
                     Instantiate(enemyMarkerPrefab, transform.position, Quaternion.identity);
                 }
-                
-                break; 
+
+                break;
             }
         }
     }
@@ -210,7 +236,7 @@ public class StalkerEnemy : MonoBehaviour
         if (!anticipationEvent.IsNull) 
         {
             // Plays the sound EXACTLY where the monster is about to be!
-            RuntimeManager.PlayOneShot(anticipationEvent, targetPos);
+            // RuntimeManager.PlayOneShot(anticipationEvent, targetPos);
         }
 
         // Wait for the player to hear it and react
